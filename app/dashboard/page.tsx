@@ -12,15 +12,32 @@ import {
   DollarSign, 
   Settings, 
   TrendingUp,
-  ArrowLeft
+  ArrowLeft,
+  RefreshCw
 } from "lucide-react";
 import Link from "next/link";
+import { useBlockchain } from "@/lib/useBlockchain";
 
 export default function Dashboard() {
-  const [subscriptionPrice, setSubscriptionPrice] = useState("10");
-  const [operatorVaultBalance, setOperatorVaultBalance] = useState("9.5");
-  const [totalMembers, setTotalMembers] = useState("1");
-  const [totalRevenue, setTotalRevenue] = useState("9.5");
+  // テスト用のウォレットアドレス（本番ではMetaMask等から取得）
+  const [walletAddress, setWalletAddress] = useState("0x0B968098E8625d63320de5b163DE073574AD7ebF");
+  const [isConnected, setIsConnected] = useState(true);
+
+  // ブロックチェーンからデータ取得
+  const {
+    vaultBalance,
+    vaultInDeFi,
+    totalRevenue,
+    totalMembers,
+    subscriptionPrice,
+    platformFees,
+    isLoading,
+  } = useBlockchain(isConnected ? walletAddress : undefined);
+
+  const handleConnect = () => {
+    // TODO: MetaMask連携
+    setIsConnected(true);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -35,11 +52,23 @@ export default function Dashboard() {
               </Button>
             </Link>
             <h1 className="text-2xl font-bold">運営者ダッシュボード</h1>
+            {isLoading && (
+              <RefreshCw className="h-4 w-4 animate-spin text-slate-400" />
+            )}
           </div>
-          <Button variant="outline">
-            <Wallet className="h-4 w-4 mr-2" />
-            ウォレット接続
-          </Button>
+          {isConnected ? (
+            <div className="flex items-center gap-2">
+              <div className="text-sm text-slate-600">
+                {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+              </div>
+              <div className="h-2 w-2 bg-green-500 rounded-full"></div>
+            </div>
+          ) : (
+            <Button onClick={handleConnect}>
+              <Wallet className="h-4 w-4 mr-2" />
+              ウォレット接続
+            </Button>
+          )}
         </div>
       </header>
 
@@ -54,9 +83,11 @@ export default function Dashboard() {
               <DollarSign className="h-4 w-4 text-slate-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${totalRevenue} USDC</div>
+              <div className="text-2xl font-bold">
+                ${isLoading ? "..." : totalRevenue} USDC
+              </div>
               <p className="text-xs text-slate-600 mt-1">
-                プラットフォーム手数料: $0.5
+                プラットフォーム手数料: ${isLoading ? "..." : platformFees}
               </p>
             </CardContent>
           </Card>
@@ -69,9 +100,11 @@ export default function Dashboard() {
               <Wallet className="h-4 w-4 text-slate-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${operatorVaultBalance} USDC</div>
+              <div className="text-2xl font-bold">
+                ${isLoading ? "..." : vaultBalance} USDC
+              </div>
               <p className="text-xs text-slate-600 mt-1">
-                DeFi運用中: $0
+                DeFi運用中: ${isLoading ? "..." : vaultInDeFi}
               </p>
             </CardContent>
           </Card>
@@ -84,9 +117,11 @@ export default function Dashboard() {
               <Users className="h-4 w-4 text-slate-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{totalMembers}人</div>
+              <div className="text-2xl font-bold">
+                {isLoading ? "..." : totalMembers}人
+              </div>
               <p className="text-xs text-slate-600 mt-1">
-                今月の新規: 1人
+                今月の新規: {totalMembers}人
               </p>
             </CardContent>
           </Card>
@@ -140,12 +175,28 @@ export default function Dashboard() {
                     id="price"
                     type="number"
                     value={subscriptionPrice}
-                    onChange={(e) => setSubscriptionPrice(e.target.value)}
+                    disabled
                     placeholder="10"
                   />
                   <p className="text-sm text-slate-600">
-                    プラットフォーム手数料5%を除いた${(parseFloat(subscriptionPrice) * 0.95).toFixed(2)}が金庫に入金されます
+                    プラットフォーム手数料5%を除いた${(parseFloat(subscriptionPrice || "0") * 0.95).toFixed(2)}が金庫に入金されます
                   </p>
+                </div>
+
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <div className="h-5 w-5 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold mt-0.5">
+                      ✓
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium text-blue-900 mb-1">
+                        BlockDAG Testnetに接続中
+                      </div>
+                      <div className="text-sm text-blue-700">
+                        現在のデータはリアルタイムでブロックチェーンから取得しています
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -153,11 +204,8 @@ export default function Dashboard() {
                   <Input
                     id="discord-server"
                     placeholder="1234567890123456789"
-                    disabled
+                    defaultValue="1436272669686235189"
                   />
-                  <p className="text-sm text-slate-600">
-                    Botを招待後に自動取得されます
-                  </p>
                 </div>
 
                 <div className="space-y-2">
@@ -165,13 +213,9 @@ export default function Dashboard() {
                   <Input
                     id="discord-role"
                     placeholder="9876543210987654321"
-                    disabled
+                    defaultValue="1436488924829716631"
                   />
                 </div>
-
-                <Button className="w-full" disabled>
-                  Discord Botを招待
-                </Button>
 
                 <Button className="w-full" variant="outline">
                   設定を保存
@@ -205,6 +249,12 @@ export default function Dashboard() {
                   </div>
                 </div>
 
+                <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                  <div className="text-sm text-amber-800">
+                    ⚠️ DeFi統合は開発中です。BlockDAG公式のDEX/Lending/Stakingプロトコルのリリース待ちです。
+                  </div>
+                </div>
+
                 <Button className="w-full" variant="outline" disabled>
                   DeFi運用を開始（準備中）
                 </Button>
@@ -223,22 +273,28 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 border rounded-lg">
-                    <div>
-                      <div className="font-medium">you8749</div>
-                      <div className="text-sm text-slate-600">
-                        次回決済: 2025/12/16
+                  {totalMembers === "0" ? (
+                    <div className="text-center py-8 text-slate-600">
+                      まだアクティブな会員がいません
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between p-4 border rounded-lg">
+                      <div>
+                        <div className="font-medium">you8749</div>
+                        <div className="text-sm text-slate-600">
+                          次回決済: 2025/12/16
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                          アクティブ
+                        </span>
+                        <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                          NFT保有
+                        </span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
-                        アクティブ
-                      </span>
-                      <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
-                        NFT保有
-                      </span>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -257,11 +313,15 @@ export default function Dashboard() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-4 border rounded-lg">
                     <div className="text-sm text-slate-600 mb-1">利用可能残高</div>
-                    <div className="text-2xl font-bold">${operatorVaultBalance}</div>
+                    <div className="text-2xl font-bold">
+                      ${isLoading ? "..." : vaultBalance}
+                    </div>
                   </div>
                   <div className="p-4 border rounded-lg">
                     <div className="text-sm text-slate-600 mb-1">DeFi運用中</div>
-                    <div className="text-2xl font-bold">$0</div>
+                    <div className="text-2xl font-bold">
+                      ${isLoading ? "..." : vaultInDeFi}
+                    </div>
                   </div>
                 </div>
 
@@ -271,6 +331,7 @@ export default function Dashboard() {
                     id="withdraw-amount"
                     type="number"
                     placeholder="0.00"
+                    max={vaultBalance}
                   />
                 </div>
 
