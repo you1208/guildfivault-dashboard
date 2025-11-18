@@ -1,40 +1,97 @@
-# GuildFi Vault Dashboard
+# GuildFi Vault
 
-Operator dashboard for GuildFi Vault - A B2B SaaS dApp that automates Discord membership management with subscription payments and DeFi yield generation.
+A gasless B2B SaaS dApp that automates Discord membership management with subscription payments and DeFi yield generation. Built on BlockDAG for the BlockDAG Buildathon 2025.
 
-![Next.js](https://img.shields.io/badge/Next.js-15-black)
+![Solidity](https://img.shields.io/badge/Solidity-0.8.28-363636)
+![Hardhat](https://img.shields.io/badge/Hardhat-Latest-yellow)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
-![Tailwind](https://img.shields.io/badge/Tailwind-CSS-38bdf8)
-![ethers.js](https://img.shields.io/badge/ethers.js-6-blue)
+![Discord.js](https://img.shields.io/badge/Discord.js-14-5865F2)
+![BlockDAG](https://img.shields.io/badge/BlockDAG-Testnet-orange)
 
 ## 🎯 Overview
 
-This dashboard allows Discord community operators to:
+**GuildFi Vault** is a complete B2B SaaS solution that enables Discord community operators to:
 
-- 💰 **Manage Subscriptions** - Set monthly pricing and view revenue
-- 👥 **Track Members** - Monitor active subscribers in real-time
-- 💵 **View Vault Balance** - Check available funds and DeFi positions
-- 📊 **Real-time Data** - Live blockchain data updated every 30 seconds
-- 🔧 **Discord Integration** - Configure server and role settings
+1. **Automate Subscription Payments** - Monthly USDC payments with automatic member management
+2. **Earn DeFi Yields** - Automatically invest collected fees in DEX, Lending, and Staking protocols
+3. **Zero Manual Work** - Discord roles automatically granted/revoked based on NFT ownership
+4. **Gasless UX** - Account Abstraction (ERC-4337) eliminates gas fees for users
 
-## 🚀 Features
+## 💰 Revenue Model
+
+### For Platform (Us)
+- **5% Platform Fee** - From each subscription payment
+- **10% Success Fee** - From DeFi-generated profits
 
 ### For Community Operators
+- **95% of Subscriptions** - Deposited to operator's vault
+- **90% of DeFi Profits** - Additional yield from automated investing
 
-- ✅ **Real-time Dashboard** - Live data from BlockDAG blockchain
-- ✅ **Subscription Management** - Set monthly fees, view active members
-- ✅ **Vault Management** - Monitor balance, withdraw funds
-- ✅ **Discord Integration** - Auto-configure server and role IDs
-- ✅ **DeFi Strategy** - View allocation (DEX 30%, Lending 50%, Staking 20%)
-- ✅ **Revenue Tracking** - Total revenue minus platform fees (5%)
+### Example Flow:
+```
+User pays $10 → Platform: $0.50 (5%) | Operator: $9.50 (95%)
+                 ↓
+        $9.50 invested in DeFi → Earns $0.50 profit
+                 ↓
+        Platform: $0.05 (10%) | Operator: $0.45 (90%)
+                 ↓
+        Operator Total: $9.95 ($9.50 + $0.45)
+```
 
-### Technical Features
+## 🏗️ Architecture
+```
+┌─────────────────────────────────────────────────────────┐
+│              GuildFi Vault - Full System                │
+└─────────────────────────────────────────────────────────┘
 
-- ⚡ **Next.js 15** - Latest App Router
-- 🎨 **shadcn/ui** - Beautiful UI components
-- 🔗 **ethers.js v6** - Blockchain integration
-- 📊 **Real-time Updates** - Data refreshes every 30 seconds
-- 🎯 **TypeScript** - Type-safe development
+👤 Member (End User)
+  ├─ Pays $10/month (USDC)
+  ├─ Receives Soulbound NFT (membership proof)
+  └─ Discord role auto-granted
+
+⛓️ Smart Contracts (BlockDAG Testnet)
+  ├─ SubscriptionManager  - Payment processing
+  ├─ FeeDistributor       - 5% platform + 10% success fee
+  ├─ OperatorVault        - Operator's fund management
+  ├─ AutomatorContract    - DeFi automation (DEX/Lending/Staking)
+  ├─ MembershipNFT        - Soulbound membership tokens
+  └─ SimplePaymaster      - Gas sponsorship (ERC-4337)
+
+🤖 Discord Bot
+  ├─ Monitors NFT ownership (30-second intervals)
+  ├─ Auto-grants "Member" role when NFT minted
+  └─ Auto-revokes role when NFT burned
+
+🌐 Frontend (Operator Dashboard)
+  ├─ Real-time vault balance
+  ├─ Member management
+  ├─ DeFi strategy configuration
+  └─ Discord integration setup
+```
+
+## 🚀 Key Features
+
+### 1. Automated Subscription Management
+- Monthly USDC payments
+- Automatic NFT minting on payment
+- Automatic NFT burning on cancellation/failure
+- Discord role sync every 30 seconds
+
+### 2. Account Abstraction (ERC-4337)
+- Paymaster covers all gas fees
+- Users only need USDC (no BDAG required)
+- Web2-like UX for crypto-novice users
+
+### 3. DeFi Auto-Investing
+- **DEX (30%)** - Swap USDC for BDAG
+- **Lending (50%)** - Earn interest on USDC
+- **Staking (20%)** - Stake BDAG for rewards
+- Platform earns 10% of generated profits
+
+### 4. Discord Integration
+- Bot monitors blockchain 24/7
+- Role management fully automated
+- No manual intervention needed
 
 ## 📦 Installation
 
@@ -42,13 +99,15 @@ This dashboard allows Discord community operators to:
 
 - Node.js 18+
 - npm or yarn
+- Hardhat
+- Discord Bot Token
 
 ### Setup
 
 1. Clone the repository
 ```bash
-git clone https://github.com/you1208/guildfivault-dashboard.git
-cd guildfivault-dashboard
+git clone https://github.com/you1208/AA-Discord-Subscription-Automator.git
+cd AA-Discord-Subscription-Automator
 ```
 
 2. Install dependencies
@@ -57,118 +116,175 @@ npm install
 ```
 
 3. Configure environment variables
-```bash
-cp .env.example .env.local
-```
 
-Edit `.env.local` with your deployed contract addresses:
+Create `.env` file:
 ```env
-# BlockDAG Testnet
-NEXT_PUBLIC_BLOCKDAG_RPC_URL=http://13.245.135.249:18545
-NEXT_PUBLIC_CHAIN_ID=7923
+# Blockchain
+PRIVATE_KEY=your_private_key_without_0x
+BLOCKDAG_RPC_URL=http://13.245.135.249:18545
 
-# GuildFi Vault Contracts (use your deployed addresses)
-NEXT_PUBLIC_USDC_ADDRESS=0x...
-NEXT_PUBLIC_FEE_DISTRIBUTOR_ADDRESS=0x...
-NEXT_PUBLIC_OPERATOR_VAULT_ADDRESS=0x...
-NEXT_PUBLIC_AUTOMATOR_ADDRESS=0x...
-NEXT_PUBLIC_NFT_ADDRESS=0x...
-NEXT_PUBLIC_MANAGER_ADDRESS=0x...
+# Deployed Contracts (BlockDAG Testnet)
+USDC_ADDRESS=0x6895435c85d42878445eCA0Ad4C026e7fEF797e4
+GUILDFIVAULT_FEE_DISTRIBUTOR=0xbc9ebd5a5c6e2b37dE2ddfcf27a98672e369b5fb
+GUILDFIVAULT_OPERATOR_VAULT=0xB6f67BF9FeB7519177E872578B4796283E47C08D
+GUILDFIVAULT_AUTOMATOR=0x9F2fBdB55EB42658d05E448EbFC4a8791351B9F9
+GUILDFIVAULT_NFT=0xD536bb6427B1C6763D6fFB95B172CCa009f6EDA4
+GUILDFIVAULT_MANAGER=0x01273126f62B3B71Bb0Df009b94bBD2A3468bC46
+
+# Discord Bot
+DISCORD_BOT_TOKEN=your_bot_token_here
+DISCORD_GUILD_ID=your_server_id_here
+DISCORD_MEMBER_ROLE_ID=your_role_id_here
+
+# Test User Mapping
+TEST_DISCORD_USER_ID=your_discord_user_id
+TEST_WALLET_ADDRESS=your_wallet_address
 ```
 
-4. Run development server
+4. Compile contracts
 ```bash
-npm run dev
+npx hardhat compile
 ```
 
-Open http://localhost:3000
-
-## 🏗️ Architecture
-```
-┌─────────────────────────────────────────────────────┐
-│           GuildFi Vault Dashboard                   │
-└─────────────────────────────────────────────────────┘
-
-📱 Frontend (Next.js)
-  ├─ Landing Page       - Marketing & features
-  ├─ Dashboard          - Operator management
-  └─ Real-time Updates  - 30-second polling
-
-⛓️ Blockchain Integration (ethers.js)
-  ├─ OperatorVault      - Balance & withdrawals
-  ├─ SubscriptionManager - Pricing & members
-  ├─ MembershipNFT      - Active member count
-  └─ FeeDistributor     - Platform fees
-
-🎨 UI Components (shadcn/ui)
-  ├─ Cards              - Statistics display
-  ├─ Tabs               - Settings, Members, Vault
-  └─ Forms              - Configuration inputs
+5. Deploy (if needed)
+```bash
+npx hardhat run scripts/deploy-guildfivault-step2.ts --network blockdag_testnet
 ```
 
-## 📊 Dashboard Pages
+6. Run Discord Bot
+```bash
+npm run bot
+```
 
-### Landing Page (`/`)
+## 🧪 Testing
 
-- Hero section with value proposition
-- Feature showcase (4 main features)
-- Pricing breakdown (5% platform fee + 10% success fee)
-- Call-to-action
+### Test Full Subscription Flow
+```bash
+npx hardhat run scripts/test-guildfivault.ts --network blockdag_testnet
+```
 
-### Operator Dashboard (`/dashboard`)
+### Test Subscription Start
+```bash
+npx hardhat run scripts/start-subscription.ts --network blockdag_testnet
+```
 
-**Statistics Cards:**
-- Total Revenue (minus platform fees)
-- Vault Balance (available + in DeFi)
-- Active Members
-- DeFi APY
+### Test Subscription Cancel
+```bash
+npx hardhat run scripts/cancel-guildfivault-subscription.ts --network blockdag_testnet
+```
 
-**Tabs:**
-1. **Settings** - Subscription price, Discord config, DeFi strategy
-2. **Members** - Active subscriber list with status
-3. **Vault** - Balance breakdown, withdrawal interface
+## 📋 Deployed Contracts (BlockDAG Testnet)
+
+| Contract | Address | Purpose |
+|----------|---------|---------|
+| MockUSDC | `0x6895...f797e4` | Test payment token |
+| FeeDistributor | `0xbc9e...9b5fb` | 5% + 10% fee management |
+| OperatorVault | `0xB6f6...C08D` | Operator fund storage |
+| AutomatorContract | `0x9F2f...1B9F9` | DeFi automation |
+| MembershipNFT | `0xD536...EDA4` | Soulbound membership tokens |
+| SubscriptionManager | `0x0127...bC46` | Payment processing |
+
+## 🎯 Use Cases
+
+1. **Discord Communities & DAOs**
+   - Premium membership tiers
+   - Automated access control
+
+2. **Online Learning Platforms**
+   - Course subscriptions
+   - Automatic enrollment/expiration
+
+3. **Content Creators**
+   - Fan clubs
+   - Exclusive content access
+
+4. **Gaming Communities**
+   - Clan memberships
+   - Tournament eligibility
 
 ## 🔗 Related Repositories
 
-- [AA-Discord-Subscription-Automator](https://github.com/you1208/AA-Discord-Subscription-Automator) - Smart contracts & Discord Bot
+- [guildfivault-dashboard](https://github.com/you1208/guildfivault-dashboard) - Operator Frontend (Next.js)
 
 ## 🛠️ Tech Stack
 
-- **Framework:** Next.js 15 (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **UI Components:** shadcn/ui
-- **Blockchain:** ethers.js v6
-- **Network:** BlockDAG Testnet
+### Smart Contracts
+- Solidity 0.8.28
+- Hardhat
+- OpenZeppelin Contracts
+- ERC-4337 (Account Abstraction)
+- ERC-721 (NFT)
+- ERC-20 (USDC)
 
-## 📝 Environment Variables
+### Discord Bot
+- Node.js + TypeScript
+- discord.js v14
+- ethers.js v6
+- 30-second polling
 
-| Variable | Description |
-|----------|-------------|
-| `NEXT_PUBLIC_BLOCKDAG_RPC_URL` | BlockDAG RPC endpoint |
-| `NEXT_PUBLIC_CHAIN_ID` | Chain ID (7923) |
-| `NEXT_PUBLIC_USDC_ADDRESS` | MockUSDC contract |
-| `NEXT_PUBLIC_FEE_DISTRIBUTOR_ADDRESS` | Fee distribution contract |
-| `NEXT_PUBLIC_OPERATOR_VAULT_ADDRESS` | Operator vault contract |
-| `NEXT_PUBLIC_AUTOMATOR_ADDRESS` | DeFi automation contract |
-| `NEXT_PUBLIC_NFT_ADDRESS` | Membership NFT contract |
-| `NEXT_PUBLIC_MANAGER_ADDRESS` | Subscription manager contract |
+### Blockchain
+- BlockDAG Testnet
+- EVM Compatible
 
-## 🚀 Deployment
+## 📊 Project Structure
+```
+discord-subscription-dapp/
+├── contracts/
+│   ├── FeeDistributor.sol          # 5% + 10% fee logic
+│   ├── OperatorVault.sol           # Operator fund management
+│   ├── AutomatorContract.sol       # DeFi automation
+│   ├── SubscriptionManager.sol     # Payment processing
+│   ├── MembershipNFT.sol          # Soulbound NFTs
+│   ├── SimplePaymaster.sol        # Gas sponsorship
+│   └── MockUSDC.sol               # Test token
+├── scripts/
+│   ├── deploy-guildfivault-step*.ts
+│   ├── test-guildfivault.ts
+│   ├── start-subscription.ts
+│   └── cancel-guildfivault-subscription.ts
+├── bot/
+│   ├── index.ts                   # Bot entry point
+│   └── blockchain-monitor.ts      # NFT monitoring
+└── test/
+```
 
-### Vercel (Recommended)
+## 💡 How It Works
 
-1. Push to GitHub
-2. Import project on [Vercel](https://vercel.com)
-3. Configure environment variables
-4. Deploy
+### For Members:
+
+1. Member approves USDC spending
+2. Calls `startSubscription()`
+3. $10 USDC deducted → $0.50 platform fee, $9.50 to operator vault
+4. Soulbound NFT minted
+5. Discord Bot detects NFT → Grants "Member" role
+6. After 30 days, monthly payment processed
+7. If payment fails → NFT burned → Role revoked
+
+### For Operators:
+
+1. Deploy dashboard (or use hosted version)
+2. Configure Discord server + role
+3. Set subscription price
+4. Funds automatically deposited to vault
+5. Optional: Enable DeFi auto-investing
+6. Withdraw anytime from available balance
 
 ## 🔒 Security
 
-- ✅ Environment variables never committed (`.env*` in `.gitignore`)
-- ✅ Only public RPC endpoints exposed
-- ✅ Contract addresses are public (safe to expose)
-- ✅ No private keys in frontend
+- ✅ Soulbound NFTs (non-transferable)
+- ✅ Account Abstraction (gasless)
+- ✅ Automated role management
+- ✅ On-chain fee transparency
+- ✅ Tested on BlockDAG Testnet
+
+## 🎉 Built for BlockDAG Buildathon 2025
+
+**Category:** DeFi Speedway
+
+**Features:**
+- ✅ Account Abstraction (Paymaster)
+- ✅ Advanced Financial Protocol (Subscription + DeFi)
+- ✅ Streaming Payments (Monthly auto-deduction)
 
 ## 📄 License
 
@@ -177,10 +293,6 @@ MIT License
 ## 👨‍💻 Author
 
 Built by [you1208](https://github.com/you1208)
-
-## 🎉 Built for BlockDAG Buildathon 2025
-
-This project is part of **GuildFi Vault** - a complete B2B SaaS solution for Discord community monetization with blockchain automation.
 
 ---
 
