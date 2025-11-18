@@ -3,6 +3,13 @@
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 
+// Window型の拡張
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
+
 export function useWallet() {
   const [address, setAddress] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
