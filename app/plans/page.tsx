@@ -132,54 +132,54 @@ export default function PlansPage() {
   };
 
   const handleUpgrade = async (tierId: number) => {
-    if (!isConnected || !signer) {
-      alert("先にウォレットを接続してください");
-      return;
+  if (!isConnected || !signer) {
+    alert("先にウォレットを接続してください");
+    return;
+  }
+
+  setIsProcessing(true);
+  try {
+    const newTier = tiers.find((t) => t.id === tierId);
+    const oldTier = tiers.find((t) => t.id === currentTier);
+    
+    if (!newTier || !oldTier) throw new Error("プランが見つかりません");
+
+    // BigInt型で計算
+    const priceDiff = BigInt(newTier.priceRaw.toString()) - BigInt(oldTier.priceRaw.toString());
+
+    // 差額チェック
+    if (priceDiff <= BigInt(0)) {
+      throw new Error("アップグレードには高いプランを選択してください");
     }
 
-    setIsProcessing(true);
-    try {
-      const newTier = tiers.find((t) => t.id === tierId);
-      const oldTier = tiers.find((t) => t.id === currentTier);
-      
-      if (!newTier || !oldTier) throw new Error("プランが見つかりません");
+    // USDC承認（差額のみ）
+    const usdc = new ethers.Contract(CONTRACTS.USDC, USDC_ABI, signer);
+    const approveTx = await usdc.approve(TIERED_MANAGER_ADDRESS, priceDiff);
+    
+    alert(`差額 $${ethers.formatUnits(priceDiff, 6)} を承認中...`);
+    await approveTx.wait();
 
-      // BigInt型で計算
-      const priceDiff = BigInt(newTier.priceRaw.toString()) - BigInt(oldTier.priceRaw.toString());
+    // アップグレード
+    const manager = new ethers.Contract(
+      TIERED_MANAGER_ADDRESS,
+      TIERED_SUBSCRIPTION_MANAGER_ABI,
+      signer
+    );
 
-      // 差額チェック
-      if (priceDiff <= 0n) {
-        throw new Error("アップグレードには高いプランを選択してください");
-      }
+    const upgradeTx = await manager.upgradeTier(tierId);
+    alert("アップグレード中...");
+    await upgradeTx.wait();
 
-      // USDC承認（差額のみ）
-      const usdc = new ethers.Contract(CONTRACTS.USDC, USDC_ABI, signer);
-      const approveTx = await usdc.approve(TIERED_MANAGER_ADDRESS, priceDiff);
-      
-      alert(`差額 $${ethers.formatUnits(priceDiff, 6)} を承認中...`);
-      await approveTx.wait();
-
-      // アップグレード
-      const manager = new ethers.Contract(
-        TIERED_MANAGER_ADDRESS,
-        TIERED_SUBSCRIPTION_MANAGER_ABI,
-        signer
-      );
-
-      const upgradeTx = await manager.upgradeTier(tierId);
-      alert("アップグレード中...");
-      await upgradeTx.wait();
-
-      alert("✅ アップグレード完了！");
-      
-      await loadTiers();
-    } catch (error: any) {
-      console.error("エラー:", error);
-      alert(`エラー: ${error.message}`);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+    alert("✅ アップグレード完了！");
+    
+    await loadTiers();
+  } catch (error: any) {
+    console.error("エラー:", error);
+    alert(`エラー: ${error.message}`);
+  } finally {
+    setIsProcessing(false);
+  }
+};
 
   const handleDowngrade = async (tierId: number) => {
     if (!isConnected || !signer) {
