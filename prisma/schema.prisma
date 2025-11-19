@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  walletAddress String   @unique
+  encryptedKey  String
+  role          String   @default("member")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id              String   @id @default(cuid())
+  userId          String
+  tierId          Int
+  isActive        Boolean  @default(true)
+  startDate       DateTime @default(now())
+  nextPaymentDate DateTime
+  
+  user User @relation(fields: [userId], references: [id])
+}

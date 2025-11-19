@@ -35,17 +35,17 @@ export default function Home() {
           Web3技術で実現する、次世代のコミュニティ運営プラットフォーム。
         </p>
         <div className="flex gap-4 justify-center">
-          <Link href="/plans">
-            <Button size="lg" className="text-lg px-8">
-              無料で始める
-            </Button>
-          </Link>
-          <Link href="#features">
-            <Button size="lg" variant="outline" className="text-lg px-8">
-              詳しく見る
-            </Button>
-          </Link>
-        </div>
+  <Link href="/signup">
+    <Button size="lg" className="text-lg px-8">
+      無料で始める
+    </Button>
+  </Link>
+  <Link href="#features">
+    <Button size="lg" variant="outline" className="text-lg px-8">
+      詳しく見る
+    </Button>
+  </Link>
+</div>
       </section>
 
       {/* 特徴セクション */}
