@@ -7,11 +7,14 @@ const REDIRECT_URI = process.env.NODE_ENV === 'production'
   : 'http://localhost:3000/api/auth/google/callback';
 
 export async function GET(request: NextRequest) {
-  // roleパラメータを取得
+  // デバッグ用ログ
+  console.log('NODE_ENV:', process.env.NODE_ENV);
+  console.log('GOOGLE_CLIENT_ID:', GOOGLE_CLIENT_ID?.substring(0, 20) + '...');
+  console.log('REDIRECT_URI:', REDIRECT_URI);
+
   const searchParams = request.nextUrl.searchParams;
   const role = searchParams.get('role') || 'operator';
   
-  // Google OAuth URL にリダイレクト
   const googleAuthUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
   
   googleAuthUrl.searchParams.append('client_id', GOOGLE_CLIENT_ID!);
@@ -20,7 +23,7 @@ export async function GET(request: NextRequest) {
   googleAuthUrl.searchParams.append('scope', 'email profile');
   googleAuthUrl.searchParams.append('access_type', 'offline');
   googleAuthUrl.searchParams.append('prompt', 'consent');
-  googleAuthUrl.searchParams.append('state', role); // roleをstateパラメータで渡す
+  googleAuthUrl.searchParams.append('state', role);
 
   return NextResponse.redirect(googleAuthUrl.toString());
 }
