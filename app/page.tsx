@@ -56,7 +56,7 @@ export default function Home() {
               <Users className="h-10 w-10 text-blue-600 mb-2" />
               <CardTitle>Auto Role Management</CardTitle>
               <CardDescription>
-                Discord roles automatically assigned/removed based on NFT ownership status.
+                Discord roles automatically assigned/removed based on subscription status.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -64,9 +64,9 @@ export default function Home() {
           <Card>
             <CardHeader>
               <Wallet className="h-10 w-10 text-blue-600 mb-2" />
-              <CardTitle>Auto DeFi Yield</CardTitle>
+              <CardTitle>Account Abstraction</CardTitle>
               <CardDescription>
-                Idle subscription funds automatically deployed to DeFi for additional yield.
+                No crypto knowledge needed. Wallet automatically generated with just your Google account.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -74,9 +74,9 @@ export default function Home() {
           <Card>
             <CardHeader>
               <Shield className="h-10 w-10 text-blue-600 mb-2" />
-              <CardTitle>Gasless Experience</CardTitle>
+              <CardTitle>Zero Gas Fees</CardTitle>
               <CardDescription>
-                Account Abstraction enabled. Users pay zero gas fees.
+                Paymaster technology covers all transaction costs. Members never pay gas fees.
               </CardDescription>
             </CardHeader>
           </Card>
