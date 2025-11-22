@@ -21,7 +21,7 @@ export default function MemberDashboard() {
   const [daysRemaining, setDaysRemaining] = useState<number>(0);
 
   useEffect(() => {
-    // ユーザー情報を取得
+    // Get user info
     const userStr = localStorage.getItem("user");
     if (!userStr) {
       router.push("/signup/member");
@@ -30,7 +30,7 @@ export default function MemberDashboard() {
 
     const userData = JSON.parse(userStr);
     
-    // サブスクリプションがない場合
+    // Redirect if no subscription
     if (!userData.subscription) {
       router.push("/plans");
       return;
@@ -38,7 +38,7 @@ export default function MemberDashboard() {
 
     setUser(userData);
 
-    // 残り日数を計算
+    // Calculate days remaining
     const endDate = new Date(userData.subscription.endDate);
     const today = new Date();
     const diffTime = endDate.getTime() - today.getTime();
@@ -60,51 +60,51 @@ export default function MemberDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
-      {/* ヘッダー */}
+      {/* Header */}
       <header className="border-b bg-white sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold">会員ダッシュボード</h1>
+            <h1 className="text-2xl font-bold">Member Dashboard</h1>
             <p className="text-sm text-slate-600">
               {user.name || user.email}
             </p>
           </div>
           <Button variant="outline" onClick={handleLogout}>
             <LogOut className="h-4 w-4 mr-2" />
-            ログアウト
+            Logout
           </Button>
         </div>
       </header>
 
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
-          {/* メインステータスカード */}
+          {/* Main Status Card */}
           <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-white">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-2xl flex items-center gap-2">
                     <Crown className="h-6 w-6 text-blue-600" />
-                    {subscription.tierName} プラン
+                    {subscription.tierName} Plan
                   </CardTitle>
                   <CardDescription className="text-base mt-1">
-                    月額 ${subscription.price}
+                    ${subscription.price} per month
                   </CardDescription>
                 </div>
                 <div className="text-right">
                   <div className="text-3xl font-bold text-blue-600">
                     {daysRemaining}
                   </div>
-                  <div className="text-sm text-slate-600">日間残り</div>
+                  <div className="text-sm text-slate-600">days left</div>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* プログレスバー */}
+              {/* Progress Bar */}
               <div>
                 <div className="flex justify-between text-sm text-slate-600 mb-2">
-                  <span>利用期間</span>
-                  <span>{30 - daysRemaining} / 30 日経過</span>
+                  <span>Subscription Period</span>
+                  <span>{30 - daysRemaining} / 30 days elapsed</span>
                 </div>
                 <div className="w-full bg-slate-200 rounded-full h-3">
                   <div
@@ -114,23 +114,23 @@ export default function MemberDashboard() {
                 </div>
               </div>
 
-              {/* 日付情報 */}
+              {/* Date Info */}
               <div className="grid grid-cols-2 gap-4 pt-2">
                 <div className="flex items-start gap-2">
                   <Calendar className="h-5 w-5 text-green-600 mt-0.5" />
                   <div>
-                    <div className="text-sm font-semibold">開始日</div>
+                    <div className="text-sm font-semibold">Start Date</div>
                     <div className="text-xs text-slate-600">
-                      {new Date(subscription.startDate).toLocaleDateString("ja-JP")}
+                      {new Date(subscription.startDate).toLocaleDateString("en-US")}
                     </div>
                   </div>
                 </div>
                 <div className="flex items-start gap-2">
                   <Calendar className="h-5 w-5 text-orange-600 mt-0.5" />
                   <div>
-                    <div className="text-sm font-semibold">終了日</div>
+                    <div className="text-sm font-semibold">End Date</div>
                     <div className="text-xs text-slate-600">
-                      {new Date(subscription.endDate).toLocaleDateString("ja-JP")}
+                      {new Date(subscription.endDate).toLocaleDateString("en-US")}
                     </div>
                   </div>
                 </div>
@@ -138,12 +138,12 @@ export default function MemberDashboard() {
             </CardContent>
           </Card>
 
-          {/* Discord連携情報 */}
+          {/* Discord Integration Info */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5" />
-                Discord連携
+                Discord Integration
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -157,47 +157,47 @@ export default function MemberDashboard() {
                       <div className="font-semibold">{user.discordUsername}</div>
                       <div className="text-sm text-slate-600 flex items-center gap-1">
                         <CheckCircle className="h-4 w-4 text-green-600" />
-                        連携済み・ロール付与済み
+                        Connected · Role Assigned
                       </div>
                     </div>
                   </div>
                   <Button variant="outline" size="sm" asChild>
                     <a href="https://discord.com" target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="h-4 w-4 mr-2" />
-                      Discordを開く
+                      Open Discord
                     </a>
                   </Button>
                 </div>
               ) : (
                 <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
                   <p className="text-sm text-amber-800">
-                    Discord連携が完了していません
+                    Discord integration not complete
                   </p>
                 </div>
               )}
             </CardContent>
           </Card>
 
-          {/* 特典一覧 */}
+          {/* Benefits List */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5" />
-                利用可能な特典
+                Available Benefits
               </CardTitle>
               <CardDescription>
-                {subscription.tierName}プランで利用できる特典
+                Benefits included in your {subscription.tierName} plan
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {/* モック特典データ */}
+                {/* Mock benefits data */}
                 {[
-                  "限定Discordチャンネルへのアクセス",
-                  "月次レポートの閲覧",
-                  "専用サポートチャネル",
-                  "優先的なイベント参加権",
-                  "限定コンテンツへのアクセス"
+                  "Access to exclusive Discord channels",
+                  "Monthly reports",
+                  "Dedicated support channel",
+                  "Priority event access",
+                  "Access to exclusive content"
                 ].map((benefit, idx) => (
                   <div key={idx} className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
                     <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
@@ -208,36 +208,36 @@ export default function MemberDashboard() {
             </CardContent>
           </Card>
 
-          {/* ウォレット情報 */}
+          {/* Wallet Info */}
           <Card>
             <CardHeader>
-              <CardTitle>ウォレット情報</CardTitle>
+              <CardTitle>Wallet Information</CardTitle>
               <CardDescription>
-                あなた専用のブロックチェーンウォレット
+                Your dedicated blockchain wallet
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                <div className="text-sm text-slate-600 mb-1">ウォレットアドレス</div>
+                <div className="text-sm text-slate-600 mb-1">Wallet Address</div>
                 <div className="font-mono text-sm break-all">
                   {user.walletAddress}
                 </div>
                 <div className="mt-3 text-xs text-slate-500">
-                  ℹ️ このウォレットは自動生成されました。秘密鍵の管理は不要です。
+                  ℹ️ This wallet was auto-generated. No private key management required.
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* アクション */}
+          {/* Actions */}
           <div className="grid md:grid-cols-2 gap-4">
             <Button variant="outline" className="w-full" asChild>
               <Link href="/plans">
-                プランを変更
+                Change Plan
               </Link>
             </Button>
             <Button variant="outline" className="w-full text-red-600 border-red-300 hover:bg-red-50">
-              サブスクリプションをキャンセル
+              Cancel Subscription
             </Button>
           </div>
         </div>

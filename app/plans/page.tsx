@@ -14,7 +14,7 @@ export default function PlansPage() {
   const { tiers, loading, subscribe } = useBlockchain();
 
   useEffect(() => {
-    // ユーザー情報を取得
+    // Get user info
     const userStr = localStorage.getItem("user");
     if (!userStr) {
       router.push("/signup/member");
@@ -29,11 +29,11 @@ export default function PlansPage() {
     setSubscribing(tierId);
 
     try {
-      // サブスクリプション処理（モック）
+      // Subscription process (mock)
       const result = await subscribe(tierId);
 
       if (result.success) {
-        // サブスクリプション情報を保存
+        // Save subscription info
         const subscription = {
           tierId,
           tierName,
@@ -50,7 +50,7 @@ export default function PlansPage() {
 
         localStorage.setItem("user", JSON.stringify(updatedUser));
 
-        // Discord ロール付与
+        // Assign Discord role
         if (user.discordId) {
           try {
             const roleResponse = await fetch('/api/discord/assign-role', {
@@ -71,16 +71,14 @@ export default function PlansPage() {
           }
         }
 
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-
-        // 会員ダッシュボードへ
+        // Redirect to member dashboard
         router.push("/member/dashboard");
       } else {
-        alert("サブスクリプション登録に失敗しました: " + result.message);
+        alert("Subscription registration failed: " + result.message);
       }
     } catch (error: any) {
       console.error("Subscription error:", error);
-      alert("エラーが発生しました: " + error.message);
+      alert("An error occurred: " + error.message);
     } finally {
       setSubscribing(null);
     }
@@ -122,7 +120,7 @@ export default function PlansPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
-      {/* ヘッダー */}
+      {/* Header */}
       <header className="border-b bg-white">
         <div className="container mx-auto px-4 py-4">
           <h1 className="text-2xl font-bold">GuildFi Vault</h1>
@@ -131,13 +129,13 @@ export default function PlansPage() {
 
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-5xl mx-auto">
-          {/* タイトル */}
+          {/* Title */}
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">
-              プランを選択
+              Choose Your Plan
             </h2>
             <p className="text-xl text-slate-600">
-              あなたに最適なメンバーシップを見つけましょう
+              Find the membership that's right for you
             </p>
             {user?.discordUsername && (
               <p className="text-sm text-slate-500 mt-2">
@@ -146,18 +144,18 @@ export default function PlansPage() {
             )}
           </div>
 
-          {/* ティア一覧 */}
+          {/* Tier List */}
           <div className="grid md:grid-cols-3 gap-6">
             {tiers.map((tier, index) => (
               <Card
                 key={tier.id}
                 className={`relative ${getTierColor(index)} border-2 transition-all hover:shadow-lg`}
               >
-                {/* 人気バッジ */}
+                {/* Popular Badge */}
                 {index === 1 && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                     <span className="px-4 py-1 bg-blue-600 text-white text-xs font-bold rounded-full">
-                      人気No.1
+                      Most Popular
                     </span>
                   </div>
                 )}
@@ -170,16 +168,16 @@ export default function PlansPage() {
                   <div className="mt-4">
                     <div className="text-4xl font-bold">
                       ${tier.price}
-                      <span className="text-lg font-normal text-slate-600">/月</span>
+                      <span className="text-lg font-normal text-slate-600">/month</span>
                     </div>
                   </div>
                   <CardDescription className="mt-2">
-                    {tier.duration}日間有効
+                    Valid for {tier.duration} days
                   </CardDescription>
                 </CardHeader>
 
                 <CardContent className="space-y-4">
-                  {/* 特典リスト */}
+                  {/* Benefits List */}
                   <div className="space-y-3">
                     {tier.benefits.map((benefit, idx) => (
                       <div key={idx} className="flex items-start gap-2">
@@ -189,14 +187,14 @@ export default function PlansPage() {
                     ))}
                   </div>
 
-                  {/* 現在の会員数 */}
+                  {/* Current Members */}
                   <div className="pt-4 border-t">
                     <div className="text-xs text-slate-600 text-center">
-                      現在 <span className="font-bold">{tier.subscriberCount}人</span> が利用中
+                      Currently <span className="font-bold">{tier.subscriberCount} members</span>
                     </div>
                   </div>
 
-                  {/* サブスクリプションボタン */}
+                  {/* Subscribe Button */}
                   <Button
                     onClick={() => handleSubscribe(tier.id, tier.name, tier.price)}
                     disabled={subscribing !== null}
@@ -207,10 +205,10 @@ export default function PlansPage() {
                     {subscribing === tier.id ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        処理中...
+                        Processing...
                       </>
                     ) : (
-                      "このプランを選択"
+                      "Select This Plan"
                     )}
                   </Button>
                 </CardContent>
@@ -218,14 +216,14 @@ export default function PlansPage() {
             ))}
           </div>
 
-          {/* 注意事項 */}
+          {/* Notes */}
           <div className="mt-12 p-6 bg-white rounded-lg border border-slate-200">
-            <h3 className="font-semibold mb-3">💡 ご利用にあたって</h3>
+            <h3 className="font-semibold mb-3">💡 Important Information</h3>
             <ul className="space-y-2 text-sm text-slate-600">
-              <li>• すべてのプランで30日間のアクセス権が付与されます</li>
-              <li>• 登録完了後、即座にDiscordロールが付与されます</li>
-              <li>• ガス代は一切不要です（Paymaster機能でガス代を代理支払い）</li>
-              <li>• いつでもキャンセル可能です</li>
+              <li>• All plans include 30 days of access</li>
+              <li>• Discord role is assigned immediately upon registration</li>
+              <li>• Zero gas fees (Paymaster covers all transaction costs)</li>
+              <li>• Cancel anytime</li>
             </ul>
           </div>
         </div>

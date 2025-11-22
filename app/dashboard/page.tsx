@@ -22,11 +22,9 @@ import TierManagement from "@/components/TierManagement";
 import InviteUrlManager from "@/components/InviteUrlManager";
 
 export default function Dashboard() {
-  // テスト用のウォレットアドレス（本番ではMetaMask等から取得）
   const [walletAddress, setWalletAddress] = useState("0x0B968098E8625d63320de5b163DE073574AD7ebF");
   const [isConnected, setIsConnected] = useState(true);
 
-  // ブロックチェーンからデータ取得
   const {
     vaultInfo,
     tiers,
@@ -35,7 +33,6 @@ export default function Dashboard() {
   } = useBlockchain();
 
   const handleConnect = () => {
-    // TODO: MetaMask連携
     setIsConnected(true);
   };
 
@@ -46,17 +43,17 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* ヘッダー */}
+      {/* Header */}
       <header className="border-b bg-white sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <Link href="/">
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                ホームへ戻る
+                Back to Home
               </Button>
             </Link>
-            <h1 className="text-2xl font-bold">運営者ダッシュボード</h1>
+            <h1 className="text-2xl font-bold">Operator Dashboard</h1>
             {loading && (
               <RefreshCw className="h-4 w-4 animate-spin text-slate-400" />
             )}
@@ -70,7 +67,7 @@ export default function Dashboard() {
                   onClick={handleLogout}
                 >
                   <LogOut className="h-4 w-4 mr-2" />
-                  ログアウト
+                  Logout
                 </Button>
                 <div className="flex items-center gap-2">
                   <div className="text-sm text-slate-600">
@@ -82,7 +79,7 @@ export default function Dashboard() {
             ) : (
               <Button onClick={handleConnect}>
                 <Wallet className="h-4 w-4 mr-2" />
-                ウォレット接続
+                Connect Wallet
               </Button>
             )}
           </div>
@@ -90,12 +87,12 @@ export default function Dashboard() {
       </header>
 
       <div className="container mx-auto px-4 py-8">
-        {/* 統計カード */}
+        {/* Stats Cards */}
         <div className="grid md:grid-cols-4 gap-4 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-slate-600">
-                総収入
+                Total Revenue
               </CardTitle>
               <DollarSign className="h-4 w-4 text-slate-600" />
             </CardHeader>
@@ -104,7 +101,7 @@ export default function Dashboard() {
                 ${loading ? "..." : (vaultInfo?.totalTVL || "0")} USDC
               </div>
               <p className="text-xs text-slate-600 mt-1">
-                プラットフォーム手数料 $0
+                Platform fee: $0
               </p>
             </CardContent>
           </Card>
@@ -112,7 +109,7 @@ export default function Dashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-slate-600">
-                金庫残高
+                Vault Balance
               </CardTitle>
               <Wallet className="h-4 w-4 text-slate-600" />
             </CardHeader>
@@ -121,7 +118,7 @@ export default function Dashboard() {
                 ${loading ? "..." : (vaultInfo?.totalTVL || "0")} USDC
               </div>
               <p className="text-xs text-slate-600 mt-1">
-                DeFi運用中: $0
+                In DeFi: $0
               </p>
             </CardContent>
           </Card>
@@ -129,16 +126,16 @@ export default function Dashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-slate-600">
-                アクティブ会員
+                Active Members
               </CardTitle>
               <Users className="h-4 w-4 text-slate-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {loading ? "..." : (vaultInfo?.totalMembers || "0")}人
+                {loading ? "..." : (vaultInfo?.totalMembers || "0")}
               </div>
               <p className="text-xs text-slate-600 mt-1">
-                今月の新規 0人
+                New this month: 0
               </p>
             </CardContent>
           </Card>
@@ -146,7 +143,7 @@ export default function Dashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-slate-600">
-                DeFi利回り
+                DeFi Yield
               </CardTitle>
               <TrendingUp className="h-4 w-4 text-slate-600" />
             </CardHeader>
@@ -155,43 +152,43 @@ export default function Dashboard() {
                 {loading ? "..." : (vaultInfo?.averageAPY || "0")}% APY
               </div>
               <p className="text-xs text-slate-600 mt-1">
-                運用なし
+                Not deployed
               </p>
             </CardContent>
           </Card>
         </div>
 
-        {/* タブ */}
+        {/* Tabs */}
         <Tabs defaultValue="settings" className="space-y-4">
           <TabsList>
             <TabsTrigger value="settings">
               <Settings className="h-4 w-4 mr-2" />
-              設定
+              Settings
             </TabsTrigger>
             <TabsTrigger value="members">
               <Users className="h-4 w-4 mr-2" />
-              会員管理
+              Members
             </TabsTrigger>
             <TabsTrigger value="vault">
               <Wallet className="h-4 w-4 mr-2" />
-              金庫管理
+              Vault
             </TabsTrigger>
           </TabsList>
 
-          {/* 設定タブ */}
+          {/* Settings Tab */}
           <TabsContent value="settings" className="space-y-4">
-            {/* 新規追加: 招待URL管理 */}
+            {/* Invite URL Manager */}
             <InviteUrlManager />
 
-            {/* 新規追加: ティア管理 */}
+            {/* Tier Management */}
             <TierManagement />
 
-            {/* 既存: 基本設定 */}
+            {/* Basic Settings */}
             <Card>
               <CardHeader>
-                <CardTitle>基本設定</CardTitle>
+                <CardTitle>Basic Settings</CardTitle>
                 <CardDescription>
-                  Discord連携とDeFi運用の設定
+                  Discord integration and DeFi deployment settings
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -202,17 +199,17 @@ export default function Dashboard() {
                     </div>
                     <div className="flex-1">
                       <div className="font-medium text-blue-900 mb-1">
-                        BlockDAG Testnetに接続中
+                        Connected to BlockDAG Testnet
                       </div>
                       <div className="text-sm text-blue-700">
-                        現在のデータはリアルタイムでブロックチェーンから取得しています
+                        Current data is retrieved in real-time from the blockchain
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="discord-server">Discord サーバー ID</Label>
+                  <Label htmlFor="discord-server">Discord Server ID</Label>
                   <Input
                     id="discord-server"
                     placeholder="1234567890123456789"
@@ -221,22 +218,22 @@ export default function Dashboard() {
                 </div>
 
                 <Button className="w-full" variant="outline">
-                  設定を保存
+                  Save Settings
                 </Button>
               </CardContent>
             </Card>
 
-            {/* DeFi運用設定 */}
+            {/* DeFi Settings */}
             <Card>
               <CardHeader>
-                <CardTitle>DeFi運用設定</CardTitle>
+                <CardTitle>DeFi Deployment Settings</CardTitle>
                 <CardDescription>
-                  金庫の資金を自動運用する設定
+                  Auto-deploy vault funds settings
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label>運用戦略</Label>
+                  <Label>Deployment Strategy</Label>
                   <div className="grid grid-cols-3 gap-2">
                     <div className="p-4 border rounded-lg">
                       <div className="text-sm text-slate-600">DEX</div>
@@ -255,35 +252,35 @@ export default function Dashboard() {
 
                 <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
                   <div className="text-sm text-amber-800">
-                    ⚠️ DeFi統合は開発中です。BlockDAG公式のDEX/Lending/Stakingプロトコルのリリース待ちです。
+                    ⚠️ DeFi integration is under development. Awaiting BlockDAG official DEX/Lending/Staking protocol releases.
                   </div>
                 </div>
 
                 <Button className="w-full" variant="outline" disabled>
-                  DeFi運用を開始（準備中）
+                  Start DeFi Deployment (In Progress)
                 </Button>
               </CardContent>
             </Card>
           </TabsContent>
 
-          {/* 会員管理タブ */}
+          {/* Members Tab */}
           <TabsContent value="members">
             <Card>
               <CardHeader>
-                <CardTitle>アクティブ会員</CardTitle>
+                <CardTitle>Active Members</CardTitle>
                 <CardDescription>
-                  現在サブスク中の会員一覧
+                  Currently subscribed members
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {!vaultInfo || vaultInfo.totalMembers === 0 ? (
                     <div className="text-center py-8 text-slate-600">
-                      まだアクティブな会員がいません
+                      No active members yet
                     </div>
                   ) : (
                     <div className="text-center py-8 text-slate-600">
-                      {vaultInfo.totalMembers}人の会員が登録中
+                      {vaultInfo.totalMembers} members registered
                     </div>
                   )}
                 </div>
@@ -291,25 +288,25 @@ export default function Dashboard() {
             </Card>
           </TabsContent>
 
-          {/* 金庫管理タブ */}
+          {/* Vault Tab */}
           <TabsContent value="vault">
             <Card>
               <CardHeader>
-                <CardTitle>金庫残高</CardTitle>
+                <CardTitle>Vault Balance</CardTitle>
                 <CardDescription>
-                  運営者資金の状況
+                  Operator fund status
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-4 border rounded-lg">
-                    <div className="text-sm text-slate-600 mb-1">利用可能残高</div>
+                    <div className="text-sm text-slate-600 mb-1">Available Balance</div>
                     <div className="text-2xl font-bold">
                       ${loading ? "..." : (vaultInfo?.totalTVL || "0")}
                     </div>
                   </div>
                   <div className="p-4 border rounded-lg">
-                    <div className="text-sm text-slate-600 mb-1">DeFi運用中</div>
+                    <div className="text-sm text-slate-600 mb-1">In DeFi</div>
                     <div className="text-2xl font-bold">
                       $0
                     </div>
@@ -317,7 +314,7 @@ export default function Dashboard() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="withdraw-amount">出金額 (USDC)</Label>
+                  <Label htmlFor="withdraw-amount">Withdraw Amount (USDC)</Label>
                   <Input
                     id="withdraw-amount"
                     type="number"
@@ -326,7 +323,7 @@ export default function Dashboard() {
                 </div>
 
                 <Button className="w-full" variant="outline">
-                  出金
+                  Withdraw
                 </Button>
               </CardContent>
             </Card>

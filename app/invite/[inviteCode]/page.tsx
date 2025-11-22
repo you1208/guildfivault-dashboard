@@ -12,9 +12,9 @@ export default function InvitePage() {
   const inviteCode = params.inviteCode as string;
 
   const handleJoin = () => {
-    // 招待コードをlocalStorageに保存
+    // Save invite code to localStorage
     localStorage.setItem("inviteCode", inviteCode);
-    // 会員登録ページへ
+    // Redirect to member signup
     router.push("/signup/member");
   };
 
@@ -22,36 +22,36 @@ export default function InvitePage() {
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-2xl mx-auto">
-          {/* ヘッダー */}
+          {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 mb-4">
               <Users className="h-8 w-8 text-blue-600" />
             </div>
             <h1 className="text-4xl font-bold mb-2">
-              コミュニティへようこそ！
+              Welcome to the Community!
             </h1>
             <p className="text-xl text-slate-600">
-              招待コード: <span className="font-mono font-bold">{inviteCode}</span>
+              Invite Code: <span className="font-mono font-bold">{inviteCode}</span>
             </p>
           </div>
 
-          {/* メインカード */}
+          {/* Main Card */}
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle className="text-2xl">特典満載のメンバーシップ</CardTitle>
+              <CardTitle className="text-2xl">Premium Membership Benefits</CardTitle>
               <CardDescription className="text-base">
-                今すぐ登録して、限定コンテンツにアクセスしよう
+                Sign up now and get instant access to exclusive content
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* 特典リスト */}
+              {/* Benefits List */}
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
                   <div>
-                    <div className="font-semibold">限定Discordロール</div>
+                    <div className="font-semibold">Exclusive Discord Role</div>
                     <div className="text-sm text-slate-600">
-                      登録と同時にDiscordで専用ロールが自動付与されます
+                      Dedicated role automatically assigned upon registration
                     </div>
                   </div>
                 </div>
@@ -59,9 +59,9 @@ export default function InvitePage() {
                 <div className="flex items-start gap-3">
                   <Shield className="h-5 w-5 text-green-600 mt-0.5" />
                   <div>
-                    <div className="font-semibold">ガス代不要</div>
+                    <div className="font-semibold">Zero Gas Fees</div>
                     <div className="text-sm text-slate-600">
-                      暗号資産やウォレットの知識は一切不要です
+                      No crypto or wallet knowledge required
                     </div>
                   </div>
                 </div>
@@ -69,38 +69,37 @@ export default function InvitePage() {
                 <div className="flex items-start gap-3">
                   <Zap className="h-5 w-5 text-green-600 mt-0.5" />
                   <div>
-                    <div className="font-semibold">即座にアクセス</div>
+                    <div className="font-semibold">Instant Access</div>
                     <div className="text-sm text-slate-600">
-                      登録完了後、すぐに限定コンテンツにアクセス可能
+                      Access exclusive content immediately after signup
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* CTAボタン */}
+              {/* CTA Button */}
               <Button
                 onClick={handleJoin}
                 size="lg"
                 className="w-full text-lg"
               >
-                Googleで今すぐ登録
+                Sign Up with Google Now
               </Button>
 
-              {/* 注意事項 */}
+              {/* Notice */}
               <div className="text-sm text-slate-600 text-center">
-                登録には有効な招待コードが必要です
+                A valid invite code is required for registration
               </div>
             </CardContent>
           </Card>
 
-          {/* 追加情報 */}
+          {/* Additional Info */}
           <div className="text-center text-sm text-slate-600">
             <p>
-              登録することで、
-              <a href="#" className="text-blue-600 hover:underline">利用規約</a>
-              と
-              <a href="#" className="text-blue-600 hover:underline">プライバシーポリシー</a>
-              に同意したものとみなされます。
+              By signing up, you agree to our{" "}
+              <a href="#" className="text-blue-600 hover:underline">Terms of Service</a>
+              {" "}and{" "}
+              <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>.
             </p>
           </div>
         </div>

@@ -1,25 +1,37 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Users, Sparkles, Shield, Zap } from "lucide-react";
 import Link from "next/link";
 
 export default function MemberSignupPage() {
+  const router = useRouter();
+
+  // Redirect to home if no invite code
+  useEffect(() => {
+    const inviteCode = localStorage.getItem("inviteCode");
+    if (!inviteCode) {
+      router.push("/");
+    }
+  }, [router]);
+
   const handleGoogleSignup = () => {
-    // バックエンドのGoogle OAuth エンドポイントにリダイレクト
+    // Redirect to Google OAuth endpoint
     window.location.href = "/api/auth/google?role=member";
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
-      {/* ヘッダー */}
+      {/* Header */}
       <header className="border-b bg-white">
         <div className="container mx-auto px-4 py-4">
-          <Link href="/signup">
+          <Link href="/">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              戻る
+              Back
             </Button>
           </Link>
         </div>
@@ -31,17 +43,17 @@ export default function MemberSignupPage() {
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
               <Users className="h-8 w-8 text-green-600" />
             </div>
-            <h1 className="text-3xl font-bold mb-2">会員として登録</h1>
+            <h1 className="text-3xl font-bold mb-2">Sign Up as Member</h1>
             <p className="text-slate-600">
-              Googleアカウントで簡単に始められます
+              Get started easily with your Google account
             </p>
           </div>
 
           <Card>
             <CardHeader>
-              <CardTitle>アカウント作成</CardTitle>
+              <CardTitle>Create Account</CardTitle>
               <CardDescription>
-                ウォレットは自動で生成されます
+                Your wallet will be automatically generated
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -68,19 +80,19 @@ export default function MemberSignupPage() {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                   />
                 </svg>
-                Googleで登録
+                Sign Up with Google
               </Button>
 
-              {/* Account Abstraction の特徴 */}
+              {/* Account Abstraction Features */}
               <div className="space-y-3 pt-2">
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-blue-100 rounded-lg">
                     <Sparkles className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <div className="font-semibold text-sm">ウォレット自動生成</div>
+                    <div className="font-semibold text-sm">Auto Wallet Generation</div>
                     <div className="text-xs text-slate-600">
-                      暗号資産やウォレットの知識は一切不要
+                      No crypto or wallet knowledge required
                     </div>
                   </div>
                 </div>
@@ -90,9 +102,9 @@ export default function MemberSignupPage() {
                     <Shield className="h-5 w-5 text-green-600" />
                   </div>
                   <div>
-                    <div className="font-semibold text-sm">ガス代完全無料</div>
+                    <div className="font-semibold text-sm">Zero Gas Fees</div>
                     <div className="text-xs text-slate-600">
-                      すべての操作で一切費用はかかりません
+                      All operations are completely free
                     </div>
                   </div>
                 </div>
@@ -102,24 +114,24 @@ export default function MemberSignupPage() {
                     <Zap className="h-5 w-5 text-purple-600" />
                   </div>
                   <div>
-                    <div className="font-semibold text-sm">即座にアクセス</div>
+                    <div className="font-semibold text-sm">Instant Access</div>
                     <div className="text-xs text-slate-600">
-                      登録完了後、すぐに限定コンテンツへ
+                      Access exclusive content immediately after signup
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Account Abstraction の説明 */}
+              {/* AA + Paymaster Explanation */}
               <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
                 <div className="text-sm text-slate-700">
-                 <div className="font-semibold mb-2 flex items-center gap-2">
+                  <div className="font-semibold mb-2 flex items-center gap-2">
                     <span>💡</span>
-                    AAウォレット + Paymaster技術
+                    AA Wallet + Paymaster Technology
                   </div>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    Account Abstractionでウォレットを自動生成し、Paymasterがガス代を代理支払い。
-                    複雑な暗号資産の管理を意識せず、Googleアカウントだけで安全にWeb3サービスを利用できます。
+                    Account Abstraction auto-generates your wallet, while Paymaster covers gas fees.
+                    Enjoy Web3 services securely with just your Google account, no complex crypto management needed.
                   </p>
                 </div>
               </div>

@@ -32,8 +32,8 @@ function AuthSuccessContent() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
-        <h1 className="text-2xl font-bold mb-4">✅ 認証成功！</h1>
-        <p className="text-slate-600">Discord連携へリダイレクト中...</p>
+        <h1 className="text-2xl font-bold mb-4">✅ Authentication Successful!</h1>
+        <p className="text-slate-600">Redirecting to Discord integration...</p>
       </div>
     </div>
   );
@@ -44,7 +44,7 @@ export default function AuthSuccessPage() {
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">読み込み中...</h1>
+          <h1 className="text-2xl font-bold mb-4">Loading...</h1>
         </div>
       </div>
     }>
