@@ -2,91 +2,164 @@
 
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import {
-  CONTRACTS,
-  OPERATOR_VAULT_ABI,
-  SUBSCRIPTION_MANAGER_ABI,
-  MEMBERSHIP_NFT_ABI,
-  FEE_DISTRIBUTOR_ABI,
-  USDC_ABI,
-} from "./contracts";
 
-export function useBlockchain(operatorAddress?: string) {
-  const [data, setData] = useState({
-    vaultBalance: "0",
-    vaultInDeFi: "0",
-    totalRevenue: "0",
-    totalMembers: "0",
-    subscriptionPrice: "0",
-    platformFees: "0",
-    isLoading: true,
-  });
+interface VaultInfo {
+  totalTVL: string;
+  activeSubscriptions: number;
+  totalMembers: number;
+  averageAPY: string;
+}
+
+interface Tier {
+  id: number;
+  name: string;
+  price: string;
+  duration: number;
+  benefits: string[];
+  subscriberCount: number;
+}
+
+export function useBlockchain() {
+  const [vaultInfo, setVaultInfo] = useState<VaultInfo | null>(null);
+  const [tiers, setTiers] = useState<Tier[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!operatorAddress) return;
-
-    const fetchData = async () => {
+    // モックデータを使用
+    const loadMockData = () => {
       try {
-        const provider = new ethers.JsonRpcProvider(
-          process.env.NEXT_PUBLIC_BLOCKDAG_RPC_URL
-        );
+        // モックのVault情報
+        const mockVaultInfo: VaultInfo = {
+          totalTVL: "125000",
+          activeSubscriptions: 342,
+          totalMembers: 1250,
+          averageAPY: "8.5",
+        };
 
-        // OperatorVault
-        const vault = new ethers.Contract(
-          CONTRACTS.OPERATOR_VAULT,
-          OPERATOR_VAULT_ABI,
-          provider
-        );
+        // モックのティア情報
+        const mockTiers: Tier[] = [
+          {
+            id: 1,
+            name: "Bronze",
+            price: "10",
+            duration: 30,
+            benefits: ["基本アクセス", "月次レポート", "コミュニティフォーラム"],
+            subscriberCount: 150,
+          },
+          {
+            id: 2,
+            name: "Silver",
+            price: "25",
+            duration: 30,
+            benefits: [
+              "Bronzeの全特典",
+              "週次レポート",
+              "優先サポート",
+              "限定イベントアクセス",
+            ],
+            subscriberCount: 120,
+          },
+          {
+            id: 3,
+            name: "Gold",
+            price: "50",
+            duration: 30,
+            benefits: [
+              "Silverの全特典",
+              "日次レポート",
+              "1対1コンサルティング",
+              "VIPイベントアクセス",
+              "カスタムダッシュボード",
+            ],
+            subscriberCount: 72,
+          },
+        ];
 
-        // SubscriptionManager
-        const manager = new ethers.Contract(
-          CONTRACTS.MANAGER,
-          SUBSCRIPTION_MANAGER_ABI,
-          provider
-        );
-
-        // MembershipNFT
-        const nft = new ethers.Contract(
-          CONTRACTS.NFT,
-          MEMBERSHIP_NFT_ABI,
-          provider
-        );
-
-        // FeeDistributor
-        const feeDistributor = new ethers.Contract(
-          CONTRACTS.FEE_DISTRIBUTOR,
-          FEE_DISTRIBUTOR_ABI,
-          provider
-        );
-
-        // データ取得
-        const [available, inDeFi, totalDeposited] = await vault.getVaultInfo(
-          operatorAddress
-        );
-        const totalSupply = await nft.totalSupply();
-        const subPrice = await manager.subscriptionPrice();
-        const platformFees = await feeDistributor.totalPlatformFeesCollected();
-
-        setData({
-          vaultBalance: ethers.formatUnits(available, 6),
-          vaultInDeFi: ethers.formatUnits(inDeFi, 6),
-          totalRevenue: ethers.formatUnits(totalDeposited, 6),
-          totalMembers: totalSupply.toString(),
-          subscriptionPrice: ethers.formatUnits(subPrice, 6),
-          platformFees: ethers.formatUnits(platformFees, 6),
-          isLoading: false,
-        });
-      } catch (error) {
-        console.error("データ取得エラー:", error);
-        setData((prev) => ({ ...prev, isLoading: false }));
+        setVaultInfo(mockVaultInfo);
+        setTiers(mockTiers);
+        setLoading(false);
+      } catch (err: any) {
+        console.error("データ取得エラー:", err);
+        setError(err.message);
+        setLoading(false);
       }
     };
 
-    fetchData();
-    const interval = setInterval(fetchData, 30000); // 30秒ごとに更新
+    loadMockData();
+
+    // 30秒ごとにデータを更新（実際はモックなので変わらない）
+    const interval = setInterval(loadMockData, 30000);
 
     return () => clearInterval(interval);
-  }, [operatorAddress]);
+  }, []);
 
-  return data;
+  const createTier = async (
+    name: string,
+    price: string,
+    duration: number,
+    benefits: string[]
+  ) => {
+    try {
+      console.log("Creating tier:", { name, price, duration, benefits });
+      
+      // モック: 新しいティアを追加
+      const newTier: Tier = {
+        id: tiers.length + 1,
+        name,
+        price,
+        duration,
+        benefits,
+        subscriberCount: 0,
+      };
+
+      setTiers([...tiers, newTier]);
+      
+      return {
+        success: true,
+        message: "ティアが作成されました（モックモード）",
+      };
+    } catch (err: any) {
+      console.error("Tier creation error:", err);
+      return {
+        success: false,
+        message: err.message,
+      };
+    }
+  };
+
+  const subscribe = async (tierId: number) => {
+    try {
+      console.log("Subscribing to tier:", tierId);
+      
+      // モック: サブスクライバー数を増やす
+      setTiers(
+        tiers.map((tier) =>
+          tier.id === tierId
+            ? { ...tier, subscriberCount: tier.subscriberCount + 1 }
+            : tier
+        )
+      );
+
+      return {
+        success: true,
+        message: "サブスクリプションが開始されました（モックモード）",
+      };
+    } catch (err: any) {
+      console.error("Subscription error:", err);
+      return {
+        success: false,
+        message: err.message,
+      };
+    }
+  };
+
+  return {
+    vaultInfo,
+    tiers,
+    loading,
+    error,
+    createTier,
+    subscribe,
+  };
 }

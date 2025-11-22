@@ -8,19 +8,8 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
       {/* ヘッダー */}
       <header className="border-b bg-white">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Shield className="h-8 w-8 text-blue-600" />
-            <h1 className="text-2xl font-bold">GuildFi Vault</h1>
-          </div>
-          <div className="flex gap-4">
-            <Link href="/plans">
-              <Button variant="outline">プラン選択</Button>
-            </Link>
-            <Link href="/dashboard">
-              <Button>ダッシュボード</Button>
-            </Link>
-          </div>
+        <div className="container mx-auto px-4 py-4">
+          <h1 className="text-2xl font-bold">GuildFi Vault</h1>
         </div>
       </header>
 
@@ -35,17 +24,17 @@ export default function Home() {
           Web3技術で実現する、次世代のコミュニティ運営プラットフォーム。
         </p>
         <div className="flex gap-4 justify-center">
-  <Link href="/signup">
-    <Button size="lg" className="text-lg px-8">
-      無料で始める
-    </Button>
-  </Link>
-  <Link href="#features">
-    <Button size="lg" variant="outline" className="text-lg px-8">
-      詳しく見る
-    </Button>
-  </Link>
-</div>
+          <Link href="/signup">
+            <Button size="lg" className="text-lg px-8">
+              無料で始める
+            </Button>
+          </Link>
+          <Link href="#features">
+            <Button size="lg" variant="outline" className="text-lg px-8">
+              詳しく見る
+            </Button>
+          </Link>
+        </div>
       </section>
 
       {/* 特徴セクション */}
@@ -57,7 +46,7 @@ export default function Home() {
               <DollarSign className="h-10 w-10 text-blue-600 mb-2" />
               <CardTitle>自動決済</CardTitle>
               <CardDescription>
-                月額サブスクの決済を完全自動化。未払い時は自動でロール剥奪。
+                月額サブスクの決済を完全自動化。支払い時に自動でロール削除。
               </CardDescription>
             </CardHeader>
           </Card>
@@ -67,7 +56,7 @@ export default function Home() {
               <Users className="h-10 w-10 text-blue-600 mb-2" />
               <CardTitle>ロール自動管理</CardTitle>
               <CardDescription>
-                NFT保有状況に応じて、Discordロールを自動で付与・剥奪。
+                NFT保有状況に応じて、Discordロールを自動で付与・削除。
               </CardDescription>
             </CardHeader>
           </Card>
@@ -77,7 +66,7 @@ export default function Home() {
               <Wallet className="h-10 w-10 text-blue-600 mb-2" />
               <CardTitle>DeFi自動運用</CardTitle>
               <CardDescription>
-                徴収した会費を自動でDeFi運用。追加の利回りを獲得。
+                待機している会費を自動でDeFi運用。追加の利回りを獲得。
               </CardDescription>
             </CardHeader>
           </Card>
@@ -141,7 +130,7 @@ export default function Home() {
           <p className="text-xl mb-8 opacity-90">
             セットアップは5分。すぐに自動化された収益システムを構築できます。
           </p>
-          <Link href="/plans">
+          <Link href="/signup">
             <Button size="lg" variant="secondary" className="text-lg px-8">
               無料で始める
             </Button>

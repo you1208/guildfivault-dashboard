@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Wallet, 
-  Users, 
-  DollarSign, 
-  Settings, 
+import {
+  Wallet,
+  Users,
+  DollarSign,
+  Settings,
   TrendingUp,
   ArrowLeft,
   RefreshCw
@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import { useBlockchain } from "@/lib/useBlockchain";
 import TierManagement from "@/components/TierManagement";
+import InviteUrlManager from "@/components/InviteUrlManager";  // ← この行を追加
 
 export default function Dashboard() {
   // テスト用のウォレットアドレス（本番ではMetaMask等から取得）
@@ -57,12 +58,24 @@ export default function Dashboard() {
               <RefreshCw className="h-4 w-4 animate-spin text-slate-400" />
             )}
           </div>
-          {isConnected ? (
-            <div className="flex items-center gap-2">
-              <div className="text-sm text-slate-600">
-                {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+         {isConnected ? (
+            <div className="flex items-center gap-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  localStorage.clear();
+                  window.location.href = '/';
+                }}
+              >
+                ログアウト
+              </Button>
+              <div className="flex items-center gap-2">
+                <div className="text-sm text-slate-600">
+                  {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                </div>
+                <div className="h-2 w-2 bg-green-500 rounded-full"></div>
               </div>
-              <div className="h-2 w-2 bg-green-500 rounded-full"></div>
             </div>
           ) : (
             <Button onClick={handleConnect}>
@@ -160,8 +173,11 @@ export default function Dashboard() {
             </TabsTrigger>
           </TabsList>
 
-          {/* 設定タブ */}
+         {/* 設定タブ */}
           <TabsContent value="settings" className="space-y-4">
+            {/* 新規追加: 招待URL管理 */}
+            <InviteUrlManager />
+
             {/* 新規追加: ティア管理 */}
             <TierManagement />
 
