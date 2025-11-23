@@ -65,36 +65,34 @@ export default function PlansPage() {
         return;
       }
 
-      // 2. Get Discord ID and Guild ID from localStorage
+     // 2. Get Discord ID and Guild ID from localStorage
       const storedDiscordId = localStorage.getItem('discordId');
       const storedGuildId = localStorage.getItem('discordServerId');
       
-      console.log('Assigning Discord role:', plan.name, 'to', storedDiscordId, 'in guild', storedGuildId);
-      console.log('Request body:', { guildId: storedGuildId, discordId: storedDiscordId, roleName: plan.name });
+      console.log('=== Discord Role Assignment ===');
+      console.log('Discord ID:', storedDiscordId);
+      console.log('Guild ID:', storedGuildId);
+      console.log('Role Name:', plan.name);
       
       // 3. Assign Discord role
       if (storedDiscordId && storedGuildId) {
+        const requestBody = { 
+          guildId: storedGuildId,
+          discordId: storedDiscordId, 
+          roleName: plan.name 
+        };
+        
+        console.log('Assigning Discord role:', plan.name, 'to', storedDiscordId, 'in guild', storedGuildId);
+        console.log('Request body:', requestBody);
+        console.log('Request body JSON:', JSON.stringify(requestBody));
+        
         const roleResponse = await fetch('/api/discord/assign-role', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ 
-            guildId: storedGuildId,
-            discordId: storedDiscordId, 
-            roleName: plan.name 
-          }),
+          body: JSON.stringify(requestBody),
         });
-
-        const roleResult = await roleResponse.json();
-        console.log('Discord role assignment result:', roleResult);
-
-        if (!roleResult.success) {
-          console.error('Discord role assignment failed:', roleResult.error);
-        }
-      } else {
-        console.error('Missing Discord ID or Guild ID');
-      }
 
       // 4. Redirect to dashboard
       alert('Subscription successful! Redirecting to dashboard...');
