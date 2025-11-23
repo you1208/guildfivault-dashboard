@@ -204,9 +204,7 @@ export default function Dashboard() {
                       Click the button below to invite the GuildFi Vault Bot to your Discord server. 
                       This bot will automatically manage member roles based on their subscriptions.
                     </div>
-                    <Button asChild className="w-full bg-[#5865F2] hover:bg-[#4752C4]">
-                      
-                      <Link 
+                    <Link 
                       href={`https://discord.com/api/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || 'YOUR_CLIENT_ID'}&permissions=268435456&scope=bot`}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -219,7 +217,7 @@ export default function Dashboard() {
                       </Button>
                     </Link>
                     <div className="text-xs text-blue-600 mt-2">
-                      ⚠️ Important: After adding the bot, make sure the &ldquo;GuildFi Vault&rdquo; role is positioned above your tier roles (Silver, Gold, Platinum) in Server Settings → Roles.
+                      Important: After adding the bot, make sure the GuildFi Vault role is positioned above your tier roles in Server Settings.
                     </div>
                   </div>
                 </div>
