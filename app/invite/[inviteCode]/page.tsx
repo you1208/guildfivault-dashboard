@@ -11,10 +11,13 @@ export default function InvitePage() {
   const params = useParams();
   const router = useRouter();
 
-  useEffect(() => {
+ useEffect(() => {
     // Save invite code
     if (params.inviteCode) {
-      localStorage.setItem('inviteCode', params.inviteCode);
+      const code = Array.isArray(params.inviteCode) 
+        ? params.inviteCode[0] 
+        : params.inviteCode;
+      localStorage.setItem('inviteCode', code);
     }
     
     // Save server ID from URL
