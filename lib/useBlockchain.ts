@@ -19,79 +19,94 @@ interface Tier {
   subscriberCount: number;
 }
 
+const SUBSCRIPTION_NFT_ABI = [
+  "function subscribe(string memory tierName, uint256 duration) external",
+  "function isActive(address user) external view returns (bool)",
+  "function userSubscription(address) external view returns (uint256)",
+  "event Subscribed(address indexed user, uint256 tokenId, string tierName)"
+];
+
 export function useBlockchain() {
   const [vaultInfo, setVaultInfo] = useState<VaultInfo | null>(null);
   const [tiers, setTiers] = useState<Tier[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [contract, setContract] = useState<ethers.Contract | null>(null);
 
   useEffect(() => {
-    // モックデータを使用
-    const loadMockData = () => {
+    const initBlockchain = async () => {
       try {
-        // モックのVault情報
-        const mockVaultInfo: VaultInfo = {
-          totalTVL: "125000",
-          activeSubscriptions: 342,
-          totalMembers: 1250,
-          averageAPY: "8.5",
-        };
+        const rpcUrl = process.env.NEXT_PUBLIC_BLOCKDAG_RPC_URL || "https://rpc.awakening.bdagscan.com";
+        const contractAddress = process.env.NEXT_PUBLIC_SUBSCRIPTION_NFT_ADDRESS;
 
-        // モックのティア情報
+        // Use mock tiers (since simple contract doesn't store them)
         const mockTiers: Tier[] = [
           {
             id: 1,
-            name: "Bronze",
+            name: "Silver",
             price: "10",
             duration: 30,
-            benefits: ["基本アクセス", "月次レポート", "コミュニティフォーラム"],
-            subscriberCount: 150,
+            benefits: [
+              "Access to exclusive Discord channels",
+              "Monthly reports",
+              "Community forum access"
+            ],
+            subscriberCount: 0,
           },
           {
             id: 2,
-            name: "Silver",
+            name: "Gold",
             price: "25",
             duration: 30,
             benefits: [
-              "Bronzeの全特典",
-              "週次レポート",
-              "優先サポート",
-              "限定イベントアクセス",
+              "All Silver benefits",
+              "Weekly reports",
+              "Dedicated support",
+              "Priority event access"
             ],
-            subscriberCount: 120,
+            subscriberCount: 0,
           },
           {
             id: 3,
-            name: "Gold",
+            name: "Platinum",
             price: "50",
             duration: 30,
             benefits: [
-              "Silverの全特典",
-              "日次レポート",
-              "1対1コンサルティング",
-              "VIPイベントアクセス",
-              "カスタムダッシュボード",
+              "All Gold benefits",
+              "Daily reports",
+              "1-on-1 consulting",
+              "VIP event access",
+              "Custom dashboard"
             ],
-            subscriberCount: 72,
+            subscriberCount: 0,
           },
         ];
 
-        setVaultInfo(mockVaultInfo);
         setTiers(mockTiers);
+
+        if (contractAddress) {
+          const provider = new ethers.JsonRpcProvider(rpcUrl);
+          const nftContract = new ethers.Contract(contractAddress, SUBSCRIPTION_NFT_ABI, provider);
+          setContract(nftContract);
+        }
+
+        const mockVaultInfo: VaultInfo = {
+          totalTVL: "0",
+          activeSubscriptions: 0,
+          totalMembers: 0,
+          averageAPY: "0",
+        };
+
+        setVaultInfo(mockVaultInfo);
         setLoading(false);
       } catch (err: any) {
-        console.error("データ取得エラー:", err);
+        console.error("Blockchain initialization error:", err);
         setError(err.message);
         setLoading(false);
       }
     };
 
-    loadMockData();
-
-    // 30秒ごとにデータを更新（実際はモックなので変わらない）
-    const interval = setInterval(loadMockData, 30000);
-
-    return () => clearInterval(interval);
+    initBlockchain();
   }, []);
 
   const createTier = async (
@@ -101,9 +116,7 @@ export function useBlockchain() {
     benefits: string[]
   ) => {
     try {
-      console.log("Creating tier:", { name, price, duration, benefits });
-      
-      // モック: 新しいティアを追加
+      // Mock implementation - just add to local state
       const newTier: Tier = {
         id: tiers.length + 1,
         name,
@@ -114,10 +127,10 @@ export function useBlockchain() {
       };
 
       setTiers([...tiers, newTier]);
-      
+
       return {
         success: true,
-        message: "ティアが作成されました（モックモード）",
+        message: "Tier created successfully!",
       };
     } catch (err: any) {
       console.error("Tier creation error:", err);
@@ -130,20 +143,37 @@ export function useBlockchain() {
 
   const subscribe = async (tierId: number) => {
     try {
-      console.log("Subscribing to tier:", tierId);
+      if (!contract) {
+        throw new Error("Contract not initialized");
+      }
+
+      if (!window.ethereum) {
+        throw new Error("Please install MetaMask");
+      }
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const contractWithSigner = contract.connect(signer);
+
+      const tier = tiers.find(t => t.id === tierId);
+      if (!tier) {
+        throw new Error("Tier not found");
+      }
+
+      // Call subscribe function with tierName and duration
+      const durationInSeconds = tier.duration * 24 * 60 * 60;
       
-      // モック: サブスクライバー数を増やす
-      setTiers(
-        tiers.map((tier) =>
-          tier.id === tierId
-            ? { ...tier, subscriberCount: tier.subscriberCount + 1 }
-            : tier
-        )
-      );
+      console.log(`Subscribing to ${tier.name} for ${tier.duration} days`);
+      
+      const tx = await contractWithSigner.subscribe(tier.name, durationInSeconds);
+      console.log("Transaction sent:", tx.hash);
+      
+      await tx.wait();
+      console.log("Transaction confirmed!");
 
       return {
         success: true,
-        message: "サブスクリプションが開始されました（モックモード）",
+        message: "Subscription successful!",
       };
     } catch (err: any) {
       console.error("Subscription error:", err);

@@ -1,0 +1,12 @@
+.exit
+undefined.exit.exit
+232293.128282168446002311
+> console.log(ethers.formatEther(balance));
+undefined
+> const balance = await ethers.provider.getBalance("0x0b968098e8625d63320de5b163de073574ad7ebf");
+Type ".help" for more information.
+Welcome to Node.js v22.21.0.
+WARNING: You are currently using Node.js v22.21.0, which is not supported by Hardhat. This can lead to unexpected behavior. See https://hardhat.org/nodejs-versions
+npx hardhat console --network blockdag
+console.log(ethers.formatEther(balance));
+const balance = await ethers.provider.getBalance("0x0b968098e8625d63320de5b163de073574ad7ebf");

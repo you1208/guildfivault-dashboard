@@ -20,6 +20,7 @@ import Link from "next/link";
 import { useBlockchain } from "@/lib/useBlockchain";
 import TierManagement from "@/components/TierManagement";
 import InviteUrlManager from "@/components/InviteUrlManager";
+import MembersList from "@/components/MembersList";  // 👈 追加
 
 export default function Dashboard() {
   const [walletAddress, setWalletAddress] = useState("0x0B968098E8625d63320de5b163DE073574AD7ebF");
@@ -273,17 +274,7 @@ export default function Dashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {!vaultInfo || vaultInfo.totalMembers === 0 ? (
-                    <div className="text-center py-8 text-slate-600">
-                      No active members yet
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 text-slate-600">
-                      {vaultInfo.totalMembers} members registered
-                    </div>
-                  )}
-                </div>
+                <MembersList />
               </CardContent>
             </Card>
           </TabsContent>

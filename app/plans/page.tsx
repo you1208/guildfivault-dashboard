@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Check, Loader2, Crown, Star, Zap } from "lucide-react";
+import { Check, Loader2, Crown, Star, Zap, CreditCard } from "lucide-react";
 import { useBlockchain } from "@/lib/useBlockchain";
 
 export default function PlansPage() {
@@ -29,7 +29,7 @@ export default function PlansPage() {
     setSubscribing(tierId);
 
     try {
-      // Subscription process (mock)
+      // Subscription process
       const result = await subscribe(tierId);
 
       if (result.success) {
@@ -50,25 +50,36 @@ export default function PlansPage() {
 
         localStorage.setItem("user", JSON.stringify(updatedUser));
 
-        // Assign Discord role
+       // Assign Discord role
         if (user.discordId) {
           try {
+            const requestBody = {
+              discordId: user.discordId,
+              roleName: tierName,
+            };
+            
+            console.log(`Assigning Discord role: ${tierName} to ${user.discordId}`);
+            console.log('Request body:', requestBody);
+            
             const roleResponse = await fetch('/api/discord/assign-role', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({
-                discordId: user.discordId,
-                roleName: tierName,
-              }),
+              body: JSON.stringify(requestBody),
             });
 
             const roleResult = await roleResponse.json();
-            console.log('Discord role assignment:', roleResult);
+            console.log('Discord role assignment result:', roleResult);
+            
+            if (!roleResult.success) {
+              console.error('Discord role assignment failed:', roleResult.error);
+            }
           } catch (error) {
             console.error('Failed to assign Discord role:', error);
           }
+        } else {
+          console.warn('No Discord ID found for user:', user);
         }
 
         // Redirect to member dashboard
@@ -129,7 +140,7 @@ export default function PlansPage() {
 
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-5xl mx-auto">
-          {/* Title */}
+         {/* Title */}
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">
               Choose Your Plan
@@ -143,6 +154,34 @@ export default function PlansPage() {
               </p>
             )}
           </div>
+
+          {/* 👇 ここに追加 */}
+          {/* Credit Card Top-up Section */}
+          <Card className="mb-8 border-2 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
+            <CardContent className="py-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-bold mb-1 flex items-center gap-2">
+                    <CreditCard className="h-5 w-5 text-green-600" />
+                    Need USDC? Top Up with Credit Card
+                  </h3>
+                  <p className="text-sm text-slate-600">
+                    Buy USDC instantly using your credit card (Visa/Mastercard)
+                  </p>
+                </div>
+                <Button
+                  onClick={() => {
+                    alert("🎉 Demo: Credit card top-up integration\n\nIn production, this would connect to:\n• Stripe\n• MoonPay\n• Transak\n\nTo purchase USDC directly with your credit card.");
+                  }}
+                  className="bg-green-600 hover:bg-green-700"
+                  size="lg"
+                >
+                  <CreditCard className="h-4 w-4 mr-2" />
+                  Top Up USDC
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Tier List */}
           <div className="grid md:grid-cols-3 gap-6">
