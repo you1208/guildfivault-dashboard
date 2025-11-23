@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(request: NextRequest) {
   try {
     // Discord Botから会員リストを取得
-    const response = await fetch('http://localhost:3001/members');
-    const data = await response.json();
+const botUrl = process.env.DISCORD_BOT_URL || 'http://localhost:3001/members';
+    const response = await fetch(botUrl);
     
     if (!data.success) {
       throw new Error(data.error || 'Failed to fetch members');

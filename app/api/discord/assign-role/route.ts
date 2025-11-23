@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const botUrl = 'http://localhost:3001/assign-role';
+const botUrl = process.env.DISCORD_BOT_URL || 'http://localhost:3001/assign-role';
     console.log('Forwarding to Discord Bot at', botUrl);
     
     const requestBody = JSON.stringify({ discordId, roleName });
