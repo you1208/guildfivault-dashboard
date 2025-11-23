@@ -84,10 +84,15 @@ export function useBlockchain() {
 
         setTiers(mockTiers);
 
-        if (contractAddress) {
+if (contractAddress) {
           console.log('Initializing contract with address:', contractAddress);
           const provider = new ethers.JsonRpcProvider(rpcUrl);
-          const nftContract = new ethers.Contract(contractAddress, SUBSCRIPTION_NFT_ABI, provider);
+          
+          // Get checksummed address
+          const checksummedAddress = ethers.getAddress(contractAddress);
+          console.log('Checksummed address:', checksummedAddress);
+          
+          const nftContract = new ethers.Contract(checksummedAddress, SUBSCRIPTION_NFT_ABI, provider);
           setContract(nftContract);
           console.log('Contract initialized successfully');
         } else {
