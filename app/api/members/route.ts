@@ -2,16 +2,25 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
-    // Discord Botから会員リストを取得
-    const botUrl = process.env.DISCORD_BOT_URL || 'http://localhost:3001/members';
-    const response = await fetch(`${botUrl}/members`);
+    // Get serverId from query parameter
+    const { searchParams } = new URL(request.url);
+    const serverId = searchParams.get('serverId');
+    
+    if (!serverId) {
+      return NextResponse.json(
+        { success: false, error: 'Server ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const botUrl = process.env.DISCORD_BOT_URL || 'http://localhost:3001';
+    const response = await fetch(`${botUrl}/members?serverId=${serverId}`);
     const data = await response.json();
     
     if (!data.success) {
       throw new Error(data.error || 'Failed to fetch members');
     }
     
-    // データを整形
     const members = data.members.map((member: any, index: number) => ({
       id: index + 1,
       name: member.discordUsername,

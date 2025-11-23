@@ -22,7 +22,15 @@ export default function MembersList() {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const response = await fetch('/api/members');
+        const serverId = localStorage.getItem('discordServerId');
+        
+        if (!serverId) {
+          setMembers([]);
+          setLoading(false);
+          return;
+        }
+        
+        const response = await fetch(`/api/members?serverId=${serverId}`);
         const data = await response.json();
         
         if (data.success) {
@@ -62,7 +70,7 @@ export default function MembersList() {
   if (members.length === 0) {
     return (
       <div className="text-center py-8 text-slate-600">
-        No active members yet
+        No active members yet. Please set your Discord Server ID in Settings.
       </div>
     );
   }

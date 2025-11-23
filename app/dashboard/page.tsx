@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +25,7 @@ import MembersList from "@/components/MembersList";
 export default function Dashboard() {
   const [walletAddress, setWalletAddress] = useState("0x0B968098E8625d63320de5b163DE073574AD7ebF");
   const [isConnected, setIsConnected] = useState(true);
+  const [discordServerId, setDiscordServerId] = useState("");
 
   const {
     vaultInfo,
@@ -33,6 +34,13 @@ export default function Dashboard() {
     error,
   } = useBlockchain();
 
+  useEffect(() => {
+    const savedServerId = localStorage.getItem('discordServerId');
+    if (savedServerId) {
+      setDiscordServerId(savedServerId);
+    }
+  }, []);
+
   const handleConnect = () => {
     setIsConnected(true);
   };
@@ -40,6 +48,11 @@ export default function Dashboard() {
   const handleLogout = () => {
     localStorage.clear();
     window.location.href = '/';
+  };
+
+  const handleSaveSettings = () => {
+    localStorage.setItem('discordServerId', discordServerId);
+    alert('Settings saved!');
   };
 
   return (
@@ -243,7 +256,8 @@ export default function Dashboard() {
                   <Input
                     id="discord-server"
                     placeholder="1234567890123456789"
-                    defaultValue="1436272669686235189"
+                    value={discordServerId}
+                    onChange={(e) => setDiscordServerId(e.target.value)}
                   />
                 </div>
 
@@ -263,7 +277,7 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <Button className="w-full" variant="outline">
+                <Button className="w-full" variant="outline" onClick={handleSaveSettings}>
                   Save Settings
                 </Button>
               </CardContent>
