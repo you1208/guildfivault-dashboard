@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
-const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID;
 const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
+
 const REDIRECT_URI = process.env.NODE_ENV === 'production' 
   ? 'https://guildfivault-dashboard-awfh.vercel.app/api/auth/discord/callback'
   : 'http://localhost:3000/api/auth/discord/callback';
@@ -11,7 +11,7 @@ const REDIRECT_URI = process.env.NODE_ENV === 'production'
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get('code');
-  const state = searchParams.get('state'); // userId
+  const state = searchParams.get('state'); // serverId
   const error = searchParams.get('error');
 
   if (error) {
@@ -57,38 +57,45 @@ export async function GET(request: NextRequest) {
       throw new Error('Failed to get Discord user info');
     }
 
-    // サーバーに自動参加させる
-    try {
-      const joinResponse = await fetch(
-        `https://discord.com/api/guilds/${DISCORD_GUILD_ID}/members/${discordUser.id}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Authorization': `Bot ${DISCORD_BOT_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            access_token: tokenData.access_token,
-          }),
-        }
-      );
+    // Get serverId from state parameter
+    const serverId = state && state !== 'no-server' ? state : null;
 
-      if (joinResponse.ok) {
-        console.log(`✅ User ${discordUser.username} joined the server automatically`);
-      } else {
-        const joinError = await joinResponse.json();
-        console.log('Join response:', joinError);
-        // すでに参加している場合は無視
-        if (joinResponse.status !== 204 && joinResponse.status !== 201) {
-          console.warn('Failed to auto-join server, but continuing...');
+    // サーバーに自動参加させる
+    if (serverId) {
+      try {
+        const joinResponse = await fetch(
+          `https://discord.com/api/guilds/${serverId}/members/${discordUser.id}`,
+          {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bot ${DISCORD_BOT_TOKEN}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              access_token: tokenData.access_token,
+            }),
+          }
+        );
+
+        if (joinResponse.ok || joinResponse.status === 204) {
+          console.log(`✅ User ${discordUser.username} joined server ${serverId} automatically`);
+        } else {
+          const joinError = await joinResponse.json();
+          console.log('Join response:', joinError);
+          // すでに参加している場合は無視
+          if (joinResponse.status !== 204 && joinResponse.status !== 201) {
+            console.warn('Failed to auto-join server, but continuing...');
+          }
         }
+      } catch (joinError) {
+        console.error('Auto-join error:', joinError);
+        // エラーでも続行（すでに参加している可能性）
       }
-    } catch (joinError) {
-      console.error('Auto-join error:', joinError);
-      // エラーでも続行（すでに参加している可能性）
+    } else {
+      console.warn('No server ID in state parameter, skipping auto-join');
     }
 
-    // ユーザー情報を更新（localStorageから取得して更新）
+    // ユーザー情報を更新
     const redirectUrl = new URL(`${request.nextUrl.origin}/auth/discord-success`);
     redirectUrl.searchParams.append('discordId', discordUser.id);
     redirectUrl.searchParams.append('discordUsername', `${discordUser.username}#${discordUser.discriminator}`);
