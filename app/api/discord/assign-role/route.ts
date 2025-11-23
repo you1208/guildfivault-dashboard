@@ -1,3 +1,4 @@
+
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
@@ -18,14 +19,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-const botUrl = process.env.DISCORD_BOT_URL || 'http://localhost:3001/assign-role';
+    const botUrl = process.env.DISCORD_BOT_URL || 'http://localhost:3001/assign-role';
     console.log('Forwarding to Discord Bot at', botUrl);
     
     const requestBody = JSON.stringify({ discordId, roleName });
     console.log('Request body to send:', requestBody);
     
     // Forward to Discord Bot
-    const response = await fetch(botUrl, {
+    const response = await fetch(`${botUrl}/assign-role`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

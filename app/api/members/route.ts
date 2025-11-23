@@ -3,8 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(request: NextRequest) {
   try {
     // Discord Botから会員リストを取得
-const botUrl = process.env.DISCORD_BOT_URL || 'http://localhost:3001/members';
-    const response = await fetch(botUrl);
+    const botUrl = process.env.DISCORD_BOT_URL || 'http://localhost:3001/members';
+    const response = await fetch(`${botUrl}/members`);
+    const data = await response.json();
     
     if (!data.success) {
       throw new Error(data.error || 'Failed to fetch members');
@@ -14,13 +15,13 @@ const botUrl = process.env.DISCORD_BOT_URL || 'http://localhost:3001/members';
     const members = data.members.map((member: any, index: number) => ({
       id: index + 1,
       name: member.discordUsername,
-      email: 'N/A', // Discord APIからはメールアドレスを取得できない
+      email: 'N/A',
       discordId: member.discordId,
       discordUsername: member.discordUsername,
       tier: member.tier,
       joinDate: member.joinedAt,
       status: member.status,
-      expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30日後
+      expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
     }));
 
     return NextResponse.json({ success: true, members });
