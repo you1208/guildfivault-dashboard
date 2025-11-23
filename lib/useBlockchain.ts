@@ -85,9 +85,13 @@ export function useBlockchain() {
         setTiers(mockTiers);
 
         if (contractAddress) {
+          console.log('Initializing contract with address:', contractAddress);
           const provider = new ethers.JsonRpcProvider(rpcUrl);
           const nftContract = new ethers.Contract(contractAddress, SUBSCRIPTION_NFT_ABI, provider);
           setContract(nftContract);
+          console.log('Contract initialized successfully');
+        } else {
+          console.error('NEXT_PUBLIC_SUBSCRIPTION_NFT_ADDRESS is not set');
         }
 
         const mockVaultInfo: VaultInfo = {
@@ -141,14 +145,14 @@ export function useBlockchain() {
     }
   };
 
-  const subscribe = async (tierId: number) => {
+const subscribe = async (tierId: number) => {
     try {
+      console.log('Subscribe called with tierId:', tierId);
+      console.log('Contract state:', contract);
+      console.log('Contract address from env:', process.env.NEXT_PUBLIC_SUBSCRIPTION_NFT_ADDRESS);
+      
       if (!contract) {
         throw new Error("Contract not initialized");
-      }
-
-      if (!window.ethereum) {
-        throw new Error("Please install MetaMask");
       }
 
       const provider = new ethers.BrowserProvider(window.ethereum);
