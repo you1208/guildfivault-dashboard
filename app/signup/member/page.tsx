@@ -31,8 +31,18 @@ export default function MemberSignupPage() {
   };
 
   const handleDiscordConnect = () => {
+    console.log('Discord connect clicked');
+    console.log('Server ID:', serverId);
+    
+    if (!serverId) {
+      alert('Server ID not found. Please use the invite link again.');
+      return;
+    }
+    
     // Redirect to Discord OAuth with serverId
-    window.location.href = `/api/auth/discord?serverId=${serverId}`;
+    const url = `/api/auth/discord?serverId=${serverId}`;
+    console.log('Redirecting to:', url);
+    window.location.href = url;
   };
 
   return (

@@ -218,7 +218,7 @@ export default function Dashboard() {
                       This bot will automatically manage member roles based on their subscriptions.
                     </div>
                     <Link 
-                      href={`https://discord.com/api/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || 'YOUR_CLIENT_ID'}&permissions=268435458&scope=bot`}
+                      href={`https://discord.com/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || 'YOUR_CLIENT_ID'}&permissions=268435456&scope=bot%20applications.commands`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
