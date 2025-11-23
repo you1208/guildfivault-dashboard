@@ -145,7 +145,7 @@ export function useBlockchain() {
     }
   };
 
-const subscribe = async (tierId: number) => {
+  const subscribe = async (tierId: number) => {
     try {
       console.log('Subscribe called with tierId:', tierId);
       console.log('Contract state:', contract);
@@ -155,7 +155,11 @@ const subscribe = async (tierId: number) => {
         throw new Error("Contract not initialized");
       }
 
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      if (!window.ethereum) {
+        throw new Error("Please install MetaMask");
+      }
+
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const signer = await provider.getSigner();
       const contractWithSigner = contract.connect(signer);
 
