@@ -39,7 +39,7 @@ export function useBlockchain() {
         const rpcUrl = process.env.NEXT_PUBLIC_BLOCKDAG_RPC_URL || "https://rpc.awakening.bdagscan.com";
         const contractAddress = process.env.NEXT_PUBLIC_SUBSCRIPTION_NFT_ADDRESS;
 
-        // Use mock tiers (since simple contract doesn't store them)
+        // Use mock tiers
         const mockTiers: Tier[] = [
           {
             id: 1,
@@ -84,15 +84,16 @@ export function useBlockchain() {
 
         setTiers(mockTiers);
 
-if (contractAddress) {
+        if (contractAddress) {
           console.log('Initializing contract with address:', contractAddress);
           const provider = new ethers.JsonRpcProvider(rpcUrl);
           
-          // Get checksummed address
-          const checksummedAddress = ethers.getAddress(contractAddress);
-          console.log('Checksummed address:', checksummedAddress);
-          
-          const nftContract = new ethers.Contract(checksummedAddress, SUBSCRIPTION_NFT_ABI, provider);
+          // Use address as-is without checksum validation
+          const nftContract = new ethers.Contract(
+            contractAddress.toLowerCase(), 
+            SUBSCRIPTION_NFT_ABI, 
+            provider
+          );
           setContract(nftContract);
           console.log('Contract initialized successfully');
         } else {
@@ -125,7 +126,6 @@ if (contractAddress) {
     benefits: string[]
   ) => {
     try {
-      // Mock implementation - just add to local state
       const newTier: Tier = {
         id: tiers.length + 1,
         name,
@@ -173,12 +173,10 @@ if (contractAddress) {
         throw new Error("Tier not found");
       }
 
-      // Call subscribe function with tierName and duration
       const durationInSeconds = tier.duration * 24 * 60 * 60;
       
       console.log(`Subscribing to ${tier.name} for ${tier.duration} days`);
       
-      // Type assertion to call the function
       const tx = await (contractWithSigner as any).subscribe(tier.name, durationInSeconds);
       console.log("Transaction sent:", tx.hash);
       
