@@ -11,10 +11,17 @@ export default function InviteUrlManager() {
   const [inviteCode, setInviteCode] = useState<string>("");
   const [copied, setCopied] = useState(false);
 
-  // Generate invite code
-  const generateInviteCode = () => {
-    const code = Math.random().toString(36).substring(2, 10).toUpperCase();
-    setInviteCode(code);
+ const generateInviteUrl = () => {
+    const serverId = localStorage.getItem('discordServerId');
+    
+    if (!serverId) {
+      alert('Please set your Discord Server ID first in Basic Settings');
+      return;
+    }
+    
+    const code = Math.random().toString(36).substring(2, 15);
+    const url = `${window.location.origin}/invite/${code}?serverId=${serverId}`;
+    setInviteUrl(url);
   };
 
   // Auto-generate on mount

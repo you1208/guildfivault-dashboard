@@ -4,106 +4,77 @@ import { useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Users, Shield, Zap } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
+import Link from "next/link";
 
 export default function InvitePage() {
   const params = useParams();
   const router = useRouter();
-  const inviteCode = params.inviteCode as string;
 
-  const handleJoin = () => {
-    // Save invite code to localStorage
-    localStorage.setItem("inviteCode", inviteCode);
-    // Redirect to member signup
-    router.push("/signup/member");
-  };
+  useEffect(() => {
+    // Save invite code
+    if (params.inviteCode) {
+      localStorage.setItem('inviteCode', params.inviteCode);
+    }
+    
+    // Save server ID from URL
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const serverId = searchParams.get('serverId');
+      if (serverId) {
+        localStorage.setItem('discordServerId', serverId);
+        console.log('Saved server ID:', serverId);
+      }
+    }
+  }, [params.inviteCode]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-2xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 mb-4">
-              <Users className="h-8 w-8 text-blue-600" />
-            </div>
-            <h1 className="text-4xl font-bold mb-2">
-              Welcome to the Community!
-            </h1>
-            <p className="text-xl text-slate-600">
-              Invite Code: <span className="font-mono font-bold">{inviteCode}</span>
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+      <Card className="w-full max-w-lg">
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-4 h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center">
+            <CheckCircle2 className="h-8 w-8 text-white" />
+          </div>
+          <CardTitle className="text-2xl">You're Invited!</CardTitle>
+          <CardDescription>
+            Join an exclusive community powered by blockchain technology
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h3 className="font-semibold text-blue-900 mb-2">What you'll get:</h3>
+            <ul className="space-y-2 text-sm text-blue-800">
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4" />
+                Access to exclusive Discord channels
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4" />
+                NFT-based membership verification
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4" />
+                Automatic role management
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4" />
+                DeFi yield generation (coming soon)
+              </li>
+            </ul>
           </div>
 
-          {/* Main Card */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="text-2xl">Premium Membership Benefits</CardTitle>
-              <CardDescription className="text-base">
-                Sign up now and get instant access to exclusive content
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Benefits List */}
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                  <div>
-                    <div className="font-semibold">Exclusive Discord Role</div>
-                    <div className="text-sm text-slate-600">
-                      Dedicated role automatically assigned upon registration
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <Shield className="h-5 w-5 text-green-600 mt-0.5" />
-                  <div>
-                    <div className="font-semibold">Zero Gas Fees</div>
-                    <div className="text-sm text-slate-600">
-                      No crypto or wallet knowledge required
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <Zap className="h-5 w-5 text-green-600 mt-0.5" />
-                  <div>
-                    <div className="font-semibold">Instant Access</div>
-                    <div className="text-sm text-slate-600">
-                      Access exclusive content immediately after signup
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* CTA Button */}
-              <Button
-                onClick={handleJoin}
-                size="lg"
-                className="w-full text-lg"
-              >
-                Sign Up with Google Now
+          <div className="space-y-3">
+            <Link href="/signup/member">
+              <Button className="w-full" size="lg">
+                Get Started
               </Button>
-
-              {/* Notice */}
-              <div className="text-sm text-slate-600 text-center">
-                A valid invite code is required for registration
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Additional Info */}
-          <div className="text-center text-sm text-slate-600">
-            <p>
-              By signing up, you agree to our{" "}
-              <a href="#" className="text-blue-600 hover:underline">Terms of Service</a>
-              {" "}and{" "}
-              <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>.
+            </Link>
+            <p className="text-xs text-center text-slate-600">
+              By continuing, you agree to connect your Google and Discord accounts
             </p>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
