@@ -206,10 +206,10 @@ export default function Dashboard() {
                     </div>
                     <Button asChild className="w-full bg-[#5865F2] hover:bg-[#4752C4]">
                       
-                       href={`https://discord.com/api/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || 'YOUR_CLIENT_ID'}&permissions=268435456&scope=bot`}
+                      <Link 
+                      href={`https://discord.com/api/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || 'YOUR_CLIENT_ID'}&permissions=268435456&scope=bot`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block"
                     >
                       <Button className="w-full bg-[#5865F2] hover:bg-[#4752C4]">
                         <svg className="w-5 h-5 mr-2" viewBox="0 0 71 55" fill="none">
@@ -217,7 +217,7 @@ export default function Dashboard() {
                         </svg>
                         Add Bot to Discord Server
                       </Button>
-                    </a>
+                    </Link>
                     <div className="text-xs text-blue-600 mt-2">
                       ⚠️ Important: After adding the bot, make sure the &quot;GuildFi Vault&quot; role is positioned above your tier roles (Silver, Gold, Platinum) in Server Settings → Roles.
                     </div>
