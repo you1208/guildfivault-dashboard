@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
@@ -6,23 +5,24 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     console.log('API received body:', body);
     
-    const { discordId, roleName } = body;
+    const { guildId, discordId, roleName } = body;
     
+    console.log('Extracted guildId:', guildId);
     console.log('Extracted discordId:', discordId);
     console.log('Extracted roleName:', roleName);
     
-    if (!discordId || !roleName) {
-      console.error('Missing fields - discordId:', !!discordId, 'roleName:', !!roleName);
+    if (!guildId || !discordId || !roleName) {
+      console.error('Missing fields - guildId:', !!guildId, 'discordId:', !!discordId, 'roleName:', !!roleName);
       return NextResponse.json(
-        { success: false, error: 'Missing discordId or tierName' },
+        { success: false, error: 'Missing guildId, discordId or roleName' },
         { status: 400 }
       );
     }
 
-    const botUrl = process.env.DISCORD_BOT_URL || 'http://localhost:3001/assign-role';
+    const botUrl = process.env.DISCORD_BOT_URL || 'http://localhost:3001';
     console.log('Forwarding to Discord Bot at', botUrl);
     
-    const requestBody = JSON.stringify({ discordId, roleName });
+    const requestBody = JSON.stringify({ guildId, discordId, roleName });
     console.log('Request body to send:', requestBody);
     
     // Forward to Discord Bot
