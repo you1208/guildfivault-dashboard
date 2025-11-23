@@ -65,7 +65,7 @@ export default function PlansPage() {
         return;
       }
 
-     // 2. Get Discord ID and Guild ID from localStorage
+      // 2. Get Discord ID and Guild ID from localStorage
       const storedDiscordId = localStorage.getItem('discordId');
       const storedGuildId = localStorage.getItem('discordServerId');
       
@@ -93,6 +93,18 @@ export default function PlansPage() {
           },
           body: JSON.stringify(requestBody),
         });
+
+        const roleResult = await roleResponse.json();
+        console.log('Discord role assignment result:', roleResult);
+
+        if (!roleResult.success) {
+          console.error('Discord role assignment failed:', roleResult.error);
+        }
+      } else {
+        console.error('Missing Discord ID or Guild ID');
+        console.error('Discord ID exists:', !!storedDiscordId);
+        console.error('Guild ID exists:', !!storedGuildId);
+      }
 
       // 4. Redirect to dashboard
       alert('Subscription successful! Redirecting to dashboard...');
