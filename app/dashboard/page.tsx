@@ -219,7 +219,7 @@ export default function Dashboard() {
                       </Button>
                     </Link>
                     <div className="text-xs text-blue-600 mt-2">
-                      ⚠️ Important: After adding the bot, make sure the &quot;GuildFi Vault&quot; role is positioned above your tier roles (Silver, Gold, Platinum) in Server Settings → Roles.
+                      ⚠️ Important: After adding the bot, make sure the &ldquo;GuildFi Vault&rdquo; role is positioned above your tier roles (Silver, Gold, Platinum) in Server Settings → Roles.
                     </div>
                   </div>
                 </div>
