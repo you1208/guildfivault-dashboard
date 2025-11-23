@@ -20,7 +20,7 @@ interface Tier {
 }
 
 const SUBSCRIPTION_NFT_ABI = [
-  "function subscribe(string memory tierName, uint256 duration) external",
+  "function subscribe(string tierName, uint256 duration) external",
   "function isActive(address user) external view returns (bool)",
   "function userSubscription(address) external view returns (uint256)",
   "event Subscribed(address indexed user, uint256 tokenId, string tierName)"
@@ -165,7 +165,8 @@ export function useBlockchain() {
       
       console.log(`Subscribing to ${tier.name} for ${tier.duration} days`);
       
-      const tx = await contractWithSigner.subscribe(tier.name, durationInSeconds);
+      // Type assertion to call the function
+      const tx = await (contractWithSigner as any).subscribe(tier.name, durationInSeconds);
       console.log("Transaction sent:", tx.hash);
       
       await tx.wait();
