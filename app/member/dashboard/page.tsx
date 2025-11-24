@@ -32,7 +32,7 @@ export default function MemberDashboard() {
     
     // Redirect if no subscription
     if (!userData.subscription) {
-      router.push("/plans");
+      router.push("/member/plans");
       return;
     }
 
@@ -232,7 +232,7 @@ export default function MemberDashboard() {
           {/* Actions */}
           <div className="grid md:grid-cols-2 gap-4">
             <Button variant="outline" className="w-full" asChild>
-              <Link href="/plans">
+              <Link href="/member/plans">
                 Change Plan
               </Link>
             </Button>
