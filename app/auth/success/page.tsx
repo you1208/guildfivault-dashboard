@@ -7,23 +7,30 @@ function AuthSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  useEffect(() => {
+useEffect(() => {
     const token = searchParams.get("token");
     const userStr = searchParams.get("user");
+    const serverId = searchParams.get("serverId");
 
     if (token && userStr) {
       localStorage.setItem("token", token);
       localStorage.setItem("user", userStr);
+      
+      // Save serverId if present
+      if (serverId) {
+        localStorage.setItem('discordServerId', serverId);
+        console.log('Saved serverId from auth:', serverId);
+      }
 
       const user = JSON.parse(userStr);
 
-setTimeout(() => {
+      setTimeout(() => {
         if (user.role === 'operator') {
           router.push("/dashboard");
         } else {
-          // Get serverId from localStorage
-          const serverId = localStorage.getItem('discordServerId');
-          router.push(`/api/auth/discord?serverId=${serverId || ''}`);
+          // Get serverId from localStorage (either from URL param or already stored)
+          const storedServerId = localStorage.getItem('discordServerId');
+          router.push(`/api/auth/discord?serverId=${storedServerId || ''}`);
         }
       }, 1000);
     } else {

@@ -25,9 +25,12 @@ export default function MemberSignupPage() {
     }
   }, [router]);
 
-  const handleGoogleSignup = () => {
-    // Redirect to Google OAuth endpoint
-    window.location.href = "/api/auth/google?role=member";
+ const handleGoogleSignup = () => {
+    // Get serverId from localStorage
+    const serverId = localStorage.getItem('discordServerId');
+    // Pass both role and serverId in state (JSON encoded)
+    const stateData = JSON.stringify({ role: 'member', serverId: serverId || '' });
+    window.location.href = `/api/auth/google?role=member&state=${encodeURIComponent(stateData)}`;
   };
 
   const handleDiscordConnect = () => {

@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+
 const REDIRECT_URI = process.env.NODE_ENV === 'production' 
   ? 'https://guildfivault-dashboard-awfh.vercel.app/api/auth/google/callback'
   : 'http://localhost:3000/api/auth/google/callback';
@@ -12,7 +13,7 @@ const REDIRECT_URI = process.env.NODE_ENV === 'production'
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get('code');
-  const state = searchParams.get('state'); // roleがstateパラメータに入っている
+  const state = searchParams.get('state');
   const error = searchParams.get('error');
 
   if (error) {
@@ -62,8 +63,20 @@ export async function GET(request: NextRequest) {
     const wallet = ethers.Wallet.createRandom();
     const walletAddress = wallet.address;
 
-    // roleを取得（デフォルトはoperator）
-    const role = state || 'operator';
+    // Parse state parameter
+    let role = 'operator';
+    let serverId = '';
+    
+    if (state) {
+      try {
+        const stateData = JSON.parse(state);
+        role = stateData.role || 'operator';
+        serverId = stateData.serverId || '';
+      } catch (e) {
+        // If not JSON, treat as role string (backward compatibility)
+        role = state;
+      }
+    }
 
     // ユーザー情報（DBなしで一時的に作成）
     const user = {
@@ -72,6 +85,7 @@ export async function GET(request: NextRequest) {
       name: googleUser.name,
       walletAddress,
       role,
+      serverId,
     };
 
     // JWT生成
@@ -89,6 +103,9 @@ export async function GET(request: NextRequest) {
     const redirectUrl = new URL(`${request.nextUrl.origin}/auth/success`);
     redirectUrl.searchParams.append('token', token);
     redirectUrl.searchParams.append('user', JSON.stringify(user));
+    if (serverId) {
+      redirectUrl.searchParams.append('serverId', serverId);
+    }
 
     return NextResponse.redirect(redirectUrl.toString());
   } catch (error: any) {
