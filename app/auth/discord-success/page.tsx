@@ -23,10 +23,10 @@ function DiscordSuccessContent() {
       }
 
       setTimeout(() => {
-        router.push("/plans");
+        router.push("/member/plans");  // ← /plans から /member/plans に変更
       }, 1000);
     } else {
-      router.push("/plans?error=discord_failed");
+      router.push("/member/plans?error=discord_failed");  // ← 同様に修正
     }
   }, [router, searchParams]);
 
