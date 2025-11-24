@@ -17,11 +17,13 @@ function AuthSuccessContent() {
 
       const user = JSON.parse(userStr);
 
-      setTimeout(() => {
+setTimeout(() => {
         if (user.role === 'operator') {
           router.push("/dashboard");
         } else {
-          router.push(`/api/auth/discord?userId=${user.id}`);
+          // Get serverId from localStorage
+          const serverId = localStorage.getItem('discordServerId');
+          router.push(`/api/auth/discord?serverId=${serverId || ''}`);
         }
       }, 1000);
     } else {
